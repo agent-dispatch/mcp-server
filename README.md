@@ -12,3 +12,11 @@ Tools:
 - `get_task_logs`
 - `get_task_result`
 - `cancel_task`
+
+## Running
+
+```bash
+agentdispatch-mcp --config agentdispatch.config.json
+```
+
+The server loads account profiles, SQLite storage, and configured adapters from `agentdispatch.config.json`.

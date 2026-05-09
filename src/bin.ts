@@ -1,8 +1,13 @@
 #!/usr/bin/env node
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { createRuntimeServiceFromConfigFile } from "./bootstrap.js";
+import { createAgentDispatchMcpServer } from "./index.js";
 
-console.error("agentdispatch-mcp requires an application bootstrap that wires a RuntimeService, store, and adapters.");
-console.error("Import createAgentDispatchMcpServer from @agentdispatch/mcp-server in your host process.");
+const configPath = process.argv.includes("--config")
+  ? process.argv[process.argv.indexOf("--config") + 1]
+  : undefined;
 
 const transport = new StdioServerTransport();
-void transport.close?.();
+const runtime = await createRuntimeServiceFromConfigFile({ configPath });
+const server = createAgentDispatchMcpServer(runtime);
+await server.connect(transport);
