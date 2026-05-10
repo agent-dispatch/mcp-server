@@ -1,11 +1,12 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { describe, expect, it } from "vitest";
-import { RuntimeService, type BackendAdapter, type DispatchRequest, type RuntimeEvent, type TaskStore } from "@agentdispatch/core";
+import { RuntimeService, type BackendAdapter, type DispatchRequest, type RuntimeEvent, type RuntimeRecord, type TaskStore } from "@agentdispatch/core";
 import { createAgentDispatchMcpServer } from "../src/index.js";
 
 class MemoryStore implements TaskStore {
   private readonly tasks = new Map<string, any>();
+  private readonly runtimes = new Map<string, RuntimeRecord>();
   private readonly events = new Map<string, RuntimeEvent[]>();
   private readonly logs = new Map<string, string>();
   private readonly artifacts = new Map<string, any[]>();
@@ -18,7 +19,14 @@ class MemoryStore implements TaskStore {
     return next;
   }
   async listTasks() { return [...this.tasks.values()]; }
-  async saveRuntime() {}
+  async saveRuntime(runtime: RuntimeRecord) { this.runtimes.set(runtime.id, runtime); }
+  async updateRuntime(runtimeId: string, patch: Partial<RuntimeRecord>) {
+    const current = this.runtimes.get(runtimeId);
+    if (!current) throw new Error(`Runtime ${runtimeId} was not found.`);
+    const next = { ...current, ...patch };
+    this.runtimes.set(runtimeId, next);
+    return next;
+  }
   async saveSession() {}
   async appendEvent(event: RuntimeEvent) {
     const current = this.events.get(event.taskId) ?? [];
