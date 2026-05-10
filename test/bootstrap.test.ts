@@ -26,6 +26,24 @@ describe("MCP bootstrap", () => {
     });
   });
 
+  it("rejects invalid account and backend mappings", async () => {
+    stateDir = await mkdtemp(join(tmpdir(), "agentdispatch-mcp-"));
+    const configPath = join(stateDir, "agentdispatch.config.json");
+    await writeFile(configPath, JSON.stringify({
+      accounts: { "dev-gcp": { provider: "gcp", credentialSource: "gcloud-default" } },
+      backends: {
+        "aws-agentcore": {
+          provider: "aws",
+          capability: "agent-runtime",
+          adapter: "aws-agentcore",
+          account: "dev-gcp"
+        }
+      }
+    }));
+
+    await expect(loadAgentDispatchConfig(configPath)).rejects.toThrow("provider aws does not match account dev-gcp");
+  });
+
   it("constructs runtime with injected mock adapters", async () => {
     stateDir = await mkdtemp(join(tmpdir(), "agentdispatch-mcp-"));
     const adapter: BackendAdapter = {

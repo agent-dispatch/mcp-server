@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import { RuntimeService, type AgentDispatchConfig, type BackendAdapter } from "@agentdispatch/core";
+import { RuntimeService, validateConfig, type AgentDispatchConfig, type BackendAdapter } from "@agentdispatch/core";
 import { AwsAgentCoreAdapter } from "@agentdispatch/adapter-aws-agentcore";
 import { SqliteTaskStore } from "@agentdispatch/store-sqlite";
 
@@ -12,7 +12,9 @@ export interface RuntimeBootstrapOptions {
 export async function loadAgentDispatchConfig(configPath = process.env.AGENTDISPATCH_CONFIG ?? "agentdispatch.config.json"): Promise<AgentDispatchConfig> {
   const path = resolve(configPath);
   const raw = await readFile(path, "utf8");
-  return JSON.parse(raw) as AgentDispatchConfig;
+  const config = JSON.parse(raw) as AgentDispatchConfig;
+  assertValidConfig(config);
+  return config;
 }
 
 export async function createRuntimeServiceFromConfig(config: AgentDispatchConfig, options: RuntimeBootstrapOptions = {}): Promise<RuntimeService> {
@@ -49,4 +51,11 @@ function createConfiguredAdapters(config: AgentDispatchConfig): BackendAdapter[]
 
 function optionalString(value: unknown): string | undefined {
   return typeof value === "string" && value.length > 0 ? value : undefined;
+}
+
+function assertValidConfig(config: AgentDispatchConfig): void {
+  const errors = validateConfig(config);
+  if (errors.length > 0) {
+    throw new Error(`Invalid AgentDispatch config:\n${errors.map((error) => `- ${error}`).join("\n")}`);
+  }
 }
