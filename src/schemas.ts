@@ -17,6 +17,20 @@ export const listCapabilitiesInputSchema = z.object({
   provider: z.string().optional()
 });
 
+export const spawnCloudAgentInputSchema = z.object({
+  instruction: z.string(),
+  context: z.record(z.unknown()).optional(),
+  framework: z.string().optional(),
+  runtime_tools: z.record(z.unknown()).optional(),
+  provider: z.string().optional(),
+  account_profile: z.string().optional(),
+  target: z.object({
+    mode: z.string().optional(),
+    details: z.record(z.unknown()).optional()
+  }).optional(),
+  metadata: z.record(z.unknown()).optional()
+});
+
 export const taskIdInputSchema = z.object({
   task_id: z.string()
 });
@@ -31,6 +45,7 @@ export const mcpToolSchemas = {
   list_providers: z.object({}),
   list_capabilities: listCapabilitiesInputSchema,
   list_account_profiles: z.object({}),
+  spawn_cloud_agent: spawnCloudAgentInputSchema,
   dispatch_task: dispatchTaskInputSchema,
   get_task_status: taskIdInputSchema,
   get_task_logs: getTaskLogsInputSchema,

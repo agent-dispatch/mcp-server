@@ -140,6 +140,32 @@ describe("MCP tool invocation", () => {
     }
   });
 
+  it("spawns cloud agents with default routing through a real MCP client transport", async () => {
+    const { client, server } = await createClient();
+    try {
+      const handle = await callJson(client, "spawn_cloud_agent", {
+        instruction: "run through spawn_cloud_agent",
+        context: { repo: "agent-dispatch" },
+        framework: "echo",
+        runtime_tools: { enabled: ["web-search"] }
+      });
+      expect(handle).toMatchObject({ provider: "aws", capability: "agent-runtime", backend: "mock-agent-runtime" });
+
+      await expect(waitForTerminalStatus(client, handle.taskId)).resolves.toMatchObject({
+        taskType: "agent.run",
+        input: {
+          instruction: "run through spawn_cloud_agent",
+          context: { repo: "agent-dispatch" },
+          framework: "echo",
+          runtime_tools: { enabled: ["web-search"] }
+        }
+      });
+    } finally {
+      await client.close();
+      await server.close();
+    }
+  });
+
   it("surfaces unsupported provider errors to MCP clients", async () => {
     const { client, server } = await createClient();
     try {

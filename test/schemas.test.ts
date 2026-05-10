@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { dispatchTaskInputSchema, mcpToolSchemas } from "../src/index.js";
+import { dispatchTaskInputSchema, mcpToolSchemas, spawnCloudAgentInputSchema } from "../src/index.js";
 
 describe("MCP schemas", () => {
   it("keeps dispatch_task provider-neutral", () => {
@@ -29,7 +29,22 @@ describe("MCP schemas", () => {
       "get_task_status",
       "list_account_profiles",
       "list_capabilities",
-      "list_providers"
+      "list_providers",
+      "spawn_cloud_agent"
     ]);
+  });
+
+  it("keeps spawn_cloud_agent simple for agents", () => {
+    const parsed = spawnCloudAgentInputSchema.parse({
+      instruction: "Run this in the cloud",
+      context: { repo: "agent-dispatch" },
+      runtime_tools: { enabled: ["web-search"] }
+    });
+
+    expect(parsed).toMatchObject({
+      instruction: "Run this in the cloud",
+      context: { repo: "agent-dispatch" },
+      runtime_tools: { enabled: ["web-search"] }
+    });
   });
 });

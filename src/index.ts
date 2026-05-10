@@ -1,5 +1,5 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import type { DispatchRequest, RuntimeService } from "@agentdispatch/core";
+import { AgentDispatchError, type DispatchRequest, type RuntimeService } from "@agentdispatch/core";
 import { mcpToolSchemas } from "./schemas.js";
 
 export function createAgentDispatchMcpServer(runtime: RuntimeService): McpServer {
@@ -12,6 +12,10 @@ export function createAgentDispatchMcpServer(runtime: RuntimeService): McpServer
   });
 
   server.tool("list_account_profiles", mcpToolSchemas.list_account_profiles.shape, async () => jsonContent(runtime.listAccountProfiles()));
+
+  server.tool("spawn_cloud_agent", mcpToolSchemas.spawn_cloud_agent.shape, async (input) => {
+    return jsonContent(await runtime.dispatchTask(createSpawnCloudAgentRequest(runtime, input)));
+  });
 
   server.tool("dispatch_task", mcpToolSchemas.dispatch_task.shape, async (input) => {
     const request: DispatchRequest = {
@@ -47,6 +51,58 @@ export function createAgentDispatchMcpServer(runtime: RuntimeService): McpServer
 
 export * from "./bootstrap.js";
 export * from "./schemas.js";
+
+function createSpawnCloudAgentRequest(runtime: RuntimeService, input: {
+  instruction: string;
+  context?: Record<string, unknown>;
+  framework?: string;
+  runtime_tools?: Record<string, unknown>;
+  provider?: string;
+  account_profile?: string;
+  target?: { mode?: string; details?: Record<string, unknown> };
+  metadata?: Record<string, unknown>;
+}): DispatchRequest {
+  const account = selectAccount(runtime, input.provider, input.account_profile);
+  const capability = selectCapability(runtime, account.provider);
+  return {
+    provider: account.provider,
+    accountProfile: account.name,
+    capability,
+    taskType: "agent.run",
+    target: {
+      mode: input.target?.mode ?? "session",
+      details: input.target?.details
+    },
+    input: {
+      instruction: input.instruction,
+      context: input.context ?? {},
+      framework: input.framework,
+      runtime_tools: input.runtime_tools
+    },
+    metadata: input.metadata
+  };
+}
+
+function selectAccount(runtime: RuntimeService, provider?: string, accountProfile?: string) {
+  const accounts = runtime.listAccountProfiles();
+  const account = accounts.find((candidate) => {
+    return (!provider || candidate.provider === provider) && (!accountProfile || candidate.name === accountProfile);
+  }) ?? accounts[0];
+  if (!account) {
+    throw new AgentDispatchError({ code: "account_profile.not_configured", message: "No AgentDispatch account profile is configured." });
+  }
+  return account;
+}
+
+function selectCapability(runtime: RuntimeService, provider: string): string {
+  const capability = runtime.listCapabilities(provider).find((candidate) => {
+    return candidate.capability === "agent-runtime" && candidate.taskTypes.includes("agent.run") && candidate.targetModes.includes("session");
+  });
+  if (!capability) {
+    throw new AgentDispatchError({ code: "capability.not_configured", message: `No agent-runtime capability is configured for provider ${provider}.` });
+  }
+  return capability.capability;
+}
 
 function jsonContent(value: unknown) {
   return {
