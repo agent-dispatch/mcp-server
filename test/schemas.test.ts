@@ -36,12 +36,14 @@ describe("MCP schemas", () => {
 
   it("keeps spawn_cloud_agent simple for agents", () => {
     const parsed = spawnCloudAgentInputSchema.parse({
+      runtime: "research-agent",
       instruction: "Run this in the cloud",
       context: { repo: "agent-dispatch" },
       runtime_tools: { enabled: ["web-search"] }
     });
 
     expect(parsed).toMatchObject({
+      runtime: "research-agent",
       instruction: "Run this in the cloud",
       context: { repo: "agent-dispatch" },
       runtime_tools: { enabled: ["web-search"] }

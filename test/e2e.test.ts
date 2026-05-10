@@ -71,7 +71,28 @@ function createRuntime(adapter = mockAdapter([{ taskId: "ignored", type: "task.l
   return new RuntimeService({
     config: {
       accounts: { "dev-aws": { provider: "aws", credentialSource: "aws-sdk-default" } },
-      backends: {}
+      backends: {
+        "mock-agent-runtime": {
+          provider: "aws",
+          capability: "agent-runtime",
+          adapter: "mock-agent-runtime",
+          account: "dev-aws"
+        }
+      },
+      runtimes: {
+        "research-agent": {
+          provider: "aws",
+          account: "dev-aws",
+          capability: "agent-runtime",
+          backend: "mock-agent-runtime",
+          target: { mode: "session", details: { runtimeArn: "arn:aws:bedrock-agentcore:test" } },
+          framework: "echo",
+          runtimeTools: { enabled: ["web-search"] }
+        }
+      },
+      defaults: {
+        runtime: "research-agent"
+      }
     },
     store: new MemoryStore(),
     adapters: [adapter]
@@ -145,14 +166,17 @@ describe("MCP tool invocation", () => {
     try {
       const handle = await callJson(client, "spawn_cloud_agent", {
         instruction: "run through spawn_cloud_agent",
-        context: { repo: "agent-dispatch" },
-        framework: "echo",
-        runtime_tools: { enabled: ["web-search"] }
+        context: { repo: "agent-dispatch" }
       });
       expect(handle).toMatchObject({ provider: "aws", capability: "agent-runtime", backend: "mock-agent-runtime" });
 
       await expect(waitForTerminalStatus(client, handle.taskId)).resolves.toMatchObject({
         taskType: "agent.run",
+        backend: "mock-agent-runtime",
+        target: {
+          mode: "session",
+          details: { runtimeArn: "arn:aws:bedrock-agentcore:test" }
+        },
         input: {
           instruction: "run through spawn_cloud_agent",
           context: { repo: "agent-dispatch" },

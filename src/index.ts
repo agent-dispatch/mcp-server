@@ -1,5 +1,5 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { AgentDispatchError, type DispatchRequest, type RuntimeService } from "@agentdispatch/core";
+import { AgentDispatchError, type DispatchRequest, type RuntimeProfile, type RuntimeService } from "@agentdispatch/core";
 import { mcpToolSchemas } from "./schemas.js";
 
 export function createAgentDispatchMcpServer(runtime: RuntimeService): McpServer {
@@ -22,6 +22,7 @@ export function createAgentDispatchMcpServer(runtime: RuntimeService): McpServer
       provider: input.provider,
       accountProfile: input.account_profile,
       capability: input.capability,
+      backend: input.backend,
       taskType: input.task_type,
       target: input.target,
       input: input.input,
@@ -54,6 +55,7 @@ export * from "./schemas.js";
 
 function createSpawnCloudAgentRequest(runtime: RuntimeService, input: {
   instruction: string;
+  runtime?: string;
   context?: Record<string, unknown>;
   framework?: string;
   runtime_tools?: Record<string, unknown>;
@@ -62,46 +64,82 @@ function createSpawnCloudAgentRequest(runtime: RuntimeService, input: {
   target?: { mode?: string; details?: Record<string, unknown> };
   metadata?: Record<string, unknown>;
 }): DispatchRequest {
-  const account = selectAccount(runtime, input.provider, input.account_profile);
-  const capability = selectCapability(runtime, account.provider);
+  const profile = selectRuntimeProfile(runtime, input.runtime);
+  const defaults = runtime.getDefaults();
+  const provider = input.provider ?? profile?.provider ?? defaults.provider;
+  const account = selectAccount(runtime, provider, input.account_profile ?? profile?.account ?? defaults.accountProfile);
+  const targetMode = input.target?.mode ?? profile?.target?.mode ?? defaults.targetMode ?? "session";
+  const capability = selectCapability(runtime, account.provider, targetMode, profile?.capability ?? defaults.capability);
   return {
     provider: account.provider,
     accountProfile: account.name,
     capability,
+    backend: profile?.backend,
     taskType: "agent.run",
     target: {
-      mode: input.target?.mode ?? "session",
-      details: input.target?.details
+      mode: targetMode,
+      details: mergeRecords(profile?.target?.details, input.target?.details)
     },
     input: {
       instruction: input.instruction,
       context: input.context ?? {},
-      framework: input.framework,
-      runtime_tools: input.runtime_tools
+      framework: input.framework ?? profile?.framework ?? defaults.framework,
+      runtime_tools: mergeRecords(defaults.runtimeTools, profile?.runtimeTools, input.runtime_tools)
     },
-    metadata: input.metadata
+    metadata: mergeRecords(profile?.metadata, input.metadata)
   };
+}
+
+function selectRuntimeProfile(runtime: RuntimeService, runtimeName?: string): RuntimeProfile | undefined {
+  if (!runtimeName) return runtime.getDefaultRuntimeProfile();
+  const profile = runtime.getRuntimeProfile(runtimeName);
+  if (!profile) {
+    throw new AgentDispatchError({ code: "runtime_profile.not_found", message: `Runtime profile ${runtimeName} was not found.` });
+  }
+  return profile;
 }
 
 function selectAccount(runtime: RuntimeService, provider?: string, accountProfile?: string) {
   const accounts = runtime.listAccountProfiles();
-  const account = accounts.find((candidate) => {
-    return (!provider || candidate.provider === provider) && (!accountProfile || candidate.name === accountProfile);
-  }) ?? accounts[0];
+  const account = accountProfile
+    ? accounts.find((candidate) => candidate.name === accountProfile)
+    : accounts.find((candidate) => !provider || candidate.provider === provider);
   if (!account) {
-    throw new AgentDispatchError({ code: "account_profile.not_configured", message: "No AgentDispatch account profile is configured." });
+    throw new AgentDispatchError({
+      code: "account_profile.not_configured",
+      message: accountProfile
+        ? `Account profile ${accountProfile} is not configured.`
+        : provider
+          ? `No AgentDispatch account profile is configured for provider ${provider}.`
+          : "No AgentDispatch account profile is configured."
+    });
+  }
+  if (provider && account.provider !== provider) {
+    throw new AgentDispatchError({
+      code: "account_profile.provider_mismatch",
+      message: `Account profile ${account.name} is for ${account.provider}, not ${provider}.`
+    });
   }
   return account;
 }
 
-function selectCapability(runtime: RuntimeService, provider: string): string {
+function selectCapability(runtime: RuntimeService, provider: string, targetMode: string, requestedCapability?: string): string {
+  if (requestedCapability) return requestedCapability;
   const capability = runtime.listCapabilities(provider).find((candidate) => {
-    return candidate.capability === "agent-runtime" && candidate.taskTypes.includes("agent.run") && candidate.targetModes.includes("session");
+    return candidate.capability === "agent-runtime" && candidate.taskTypes.includes("agent.run") && candidate.targetModes.includes(targetMode);
   });
   if (!capability) {
-    throw new AgentDispatchError({ code: "capability.not_configured", message: `No agent-runtime capability is configured for provider ${provider}.` });
+    throw new AgentDispatchError({
+      code: "capability.not_configured",
+      message: `No agent-runtime capability is configured for provider ${provider} with target mode ${targetMode}.`
+    });
   }
   return capability.capability;
+}
+
+function mergeRecords(...records: Array<Record<string, unknown> | undefined>): Record<string, unknown> | undefined {
+  const merged = Object.assign({}, ...records.filter(Boolean));
+  return Object.keys(merged).length > 0 ? merged : undefined;
 }
 
 function jsonContent(value: unknown) {

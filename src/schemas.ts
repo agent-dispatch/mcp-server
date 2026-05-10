@@ -4,6 +4,7 @@ export const dispatchTaskInputSchema = z.object({
   provider: z.string(),
   account_profile: z.string(),
   capability: z.string(),
+  backend: z.string().optional(),
   task_type: z.string(),
   target: z.object({
     mode: z.string(),
@@ -19,6 +20,7 @@ export const listCapabilitiesInputSchema = z.object({
 
 export const spawnCloudAgentInputSchema = z.object({
   instruction: z.string(),
+  runtime: z.string().optional(),
   context: z.record(z.unknown()).optional(),
   framework: z.string().optional(),
   runtime_tools: z.record(z.unknown()).optional(),
