@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="AgentDispatch mark">
+  <title>AgentDispatch — spawn cloud agents</title>
+  <defs>
+    <linearGradient id="ad-grad" x1="0" y1="40" x2="200" y2="200" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#A78BFA"/>
+      <stop offset="0.55" stop-color="#7C3AED"/>
+      <stop offset="1" stop-color="#06B6D4"/>
+    </linearGradient>
+    <linearGradient id="ad-tile" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#22D3EE"/>
+      <stop offset="1" stop-color="#06B6D4"/>
+    </linearGradient>
+    <radialGradient id="ad-glow" cx="80" cy="98" r="62" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#A78BFA" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#A78BFA" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="200" height="200" rx="44" fill="#0B1020"/>
+  <circle cx="80" cy="98" r="62" fill="url(#ad-glow)"/>
+
+  <!-- Activity particles around the cloud -->
+  <g fill="#A78BFA" opacity="0.65">
+    <circle cx="34" cy="64" r="2"/>
+    <circle cx="118" cy="58" r="2.4"/>
+    <circle cx="28" cy="138" r="2"/>
+    <circle cx="98" cy="148" r="2.2"/>
+  </g>
+
+  <!-- Spokes from cloud to agent tiles -->
+  <g stroke="url(#ad-grad)" stroke-width="6.5" stroke-linecap="round" fill="none">
+    <line x1="118" y1="86" x2="165" y2="56"/>
+    <line x1="122" y1="100" x2="170" y2="100"/>
+    <line x1="118" y1="114" x2="165" y2="144"/>
+  </g>
+
+  <!-- Cloud silhouette (the dispatcher) -->
+  <g fill="url(#ad-grad)">
+    <circle cx="50" cy="108" r="22"/>
+    <circle cx="78" cy="82" r="28"/>
+    <circle cx="110" cy="100" r="22"/>
+    <rect x="42" y="102" width="72" height="26" rx="13"/>
+  </g>
+
+  <!-- Soft inner highlight on cloud top -->
+  <ellipse cx="76" cy="72" rx="16" ry="6" fill="#FFFFFF" opacity="0.18"/>
+
+  <!-- Agent tiles (spawned workers) -->
+  <g>
+    <rect x="155" y="46" width="22" height="22" rx="5.5" fill="url(#ad-tile)"/>
+    <rect x="160" y="89" width="22" height="22" rx="5.5" fill="url(#ad-tile)"/>
+    <rect x="155" y="134" width="22" height="22" rx="5.5" fill="url(#ad-tile)"/>
+
+    <!-- play-glyph inside each tile -->
+    <g fill="#0B1020">
+      <path d="M163 53 L171 57 L163 61 Z"/>
+      <path d="M168 96 L176 100 L168 104 Z"/>
+      <path d="M163 141 L171 145 L163 149 Z"/>
+    </g>
+  </g>
+</svg>

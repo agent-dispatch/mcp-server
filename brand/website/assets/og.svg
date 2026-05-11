@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="AgentDispatch — spawn cloud agents from your AI assistant">
+  <title>AgentDispatch — spawn cloud agents from your AI assistant</title>
+  <defs>
+    <linearGradient id="og-bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0B1020"/>
+      <stop offset="1" stop-color="#0F172A"/>
+    </linearGradient>
+    <radialGradient id="og-glow-1" cx="200" cy="500" r="650" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7C3AED" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#7C3AED" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="og-glow-2" cx="1050" cy="120" r="520" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#06B6D4" stop-opacity="0.4"/>
+      <stop offset="1" stop-color="#06B6D4" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="og-grad" x1="0" y1="40" x2="200" y2="200" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#C4B5FD"/>
+      <stop offset="0.55" stop-color="#A78BFA"/>
+      <stop offset="1" stop-color="#22D3EE"/>
+    </linearGradient>
+    <linearGradient id="og-tile" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#67E8F9"/>
+      <stop offset="1" stop-color="#22D3EE"/>
+    </linearGradient>
+    <linearGradient id="og-text" x1="0" y1="0" x2="900" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#A78BFA"/>
+      <stop offset="1" stop-color="#22D3EE"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#og-bg)"/>
+  <rect width="1200" height="630" fill="url(#og-glow-1)"/>
+  <rect width="1200" height="630" fill="url(#og-glow-2)"/>
+
+  <!-- Logo block -->
+  <g transform="translate(80,72)">
+    <rect width="120" height="120" rx="28" fill="#0B1020" stroke="#1F2A44"/>
+    <g transform="translate(0,0) scale(0.6)">
+      <g stroke="url(#og-grad)" stroke-width="5.2" stroke-linecap="round" fill="none">
+        <line x1="118" y1="86" x2="165" y2="56"/>
+        <line x1="122" y1="100" x2="170" y2="100"/>
+        <line x1="118" y1="114" x2="165" y2="144"/>
+      </g>
+      <g fill="url(#og-grad)">
+        <circle cx="50" cy="108" r="22"/>
+        <circle cx="78" cy="82" r="28"/>
+        <circle cx="110" cy="100" r="22"/>
+        <rect x="42" y="102" width="72" height="26" rx="13"/>
+      </g>
+      <ellipse cx="76" cy="72" rx="16" ry="6" fill="#FFFFFF" opacity="0.22"/>
+      <g>
+        <rect x="155" y="46" width="22" height="22" rx="5.5" fill="url(#og-tile)"/>
+        <rect x="160" y="89" width="22" height="22" rx="5.5" fill="url(#og-tile)"/>
+        <rect x="155" y="134" width="22" height="22" rx="5.5" fill="url(#og-tile)"/>
+        <g fill="#0B1020">
+          <path d="M163 53 L171 57 L163 61 Z"/>
+          <path d="M168 96 L176 100 L168 104 Z"/>
+          <path d="M163 141 L171 145 L163 149 Z"/>
+        </g>
+      </g>
+    </g>
+  </g>
+
+  <g font-family="Inter, ui-sans-serif, system-ui, sans-serif">
+    <text x="220" y="150" font-size="44" font-weight="800" fill="#F8FAFC" letter-spacing="-0.02em">AgentDispatch</text>
+
+    <text x="80" y="290" font-size="78" font-weight="800" fill="#F8FAFC" letter-spacing="-0.03em">Spawn cloud agents</text>
+    <text x="80" y="378" font-size="78" font-weight="800" letter-spacing="-0.03em" fill="url(#og-text)">from your AI.</text>
+
+    <text x="80" y="452" font-size="26" font-weight="500" fill="#94A3B8">Claude Code, OpenClaw, and Hermes plan. AgentDispatch</text>
+    <text x="80" y="486" font-size="26" font-weight="500" fill="#94A3B8">runs the marathon — on managed cloud compute.</text>
+
+    <g transform="translate(80,540)">
+      <rect width="180" height="42" rx="21" fill="rgba(255,255,255,0.04)" stroke="rgba(167,139,250,0.35)"/>
+      <text x="90" y="28" text-anchor="middle" font-size="16" font-weight="600" fill="#C4B5FD">Claude Code</text>
+
+      <rect x="196" width="180" height="42" rx="21" fill="rgba(255,255,255,0.04)" stroke="rgba(167,139,250,0.35)"/>
+      <text x="286" y="28" text-anchor="middle" font-size="16" font-weight="600" fill="#C4B5FD">OpenClaw</text>
+
+      <rect x="392" width="180" height="42" rx="21" fill="rgba(255,255,255,0.04)" stroke="rgba(167,139,250,0.35)"/>
+      <text x="482" y="28" text-anchor="middle" font-size="16" font-weight="600" fill="#C4B5FD">Hermes</text>
+    </g>
+
+    <text x="1120" y="595" text-anchor="end" font-size="20" font-weight="600" fill="#64748B" letter-spacing="0.06em">GITHUB.COM/AGENT-DISPATCH</text>
+  </g>
+</svg>
