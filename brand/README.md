@@ -1,6 +1,6 @@
 # AgentDispatch brand kit
 
-This directory holds the proposed visual identity, org profile README, and marketing site for the AgentDispatch organization. Because this branch lives inside `mcp-server` and my publishing access is scoped to a single repo, everything is staged here for you to copy into the right destination repos.
+This directory holds the visual identity, the org profile README, and the marketing site for the AgentDispatch organization. Because this branch lives inside `mcp-server` and my publishing access is scoped to a single repo, everything is staged here for you to copy into the right destination repos.
 
 ## Contents
 
@@ -14,15 +14,6 @@ brand/
 │   └── profile/
 │       ├── README.md          # the org profile README
 │       └── assets/            # SVGs the README references
-├── proposed-readmes/
-│   ├── core/README.md
-│   ├── sdk-js/README.md
-│   ├── cli/README.md
-│   ├── store-sqlite/README.md
-│   ├── adapter-aws-agentcore/README.md
-│   ├── worker-agentcore/README.md
-│   ├── adapter-template/README.md
-│   └── docs/README.md
 └── website/                   # static site, no build step
     ├── index.html
     ├── styles.css
@@ -51,7 +42,7 @@ The new `mcp-server` README (the viral entry point) is already in place at the r
 | Typeface | Inter (UI / docs), system-ui fallback |
 | Code typeface | ui-monospace / JetBrains Mono |
 
-The logo mark is a **dispatch hub**: one inbound spoke (left), a glowing core, two outbound spokes (right) ending in nodes. It reads literally as "signal in → fan-out to agents" — the system's job in one shape.
+The logo mark is a **cloud spawning agents**: a soft cloud silhouette (the dispatcher) with three short spokes fanning to three small agent tiles. It reads literally as "cloud → spawn agents" — the system's job in one shape.
 
 ## How to deploy each piece
 
@@ -80,23 +71,7 @@ git push
 
 Within a minute of pushing, https://github.com/agent-dispatch will render the new profile.
 
-### 3. Per-repo READMEs
-
-For every sibling package, copy the proposed README over the existing one (or merge — they were written to slot in cleanly):
-
-```bash
-for repo in core sdk-js cli store-sqlite adapter-aws-agentcore worker-agentcore adapter-template docs; do
-  cp brand/proposed-readmes/$repo/README.md ../$repo/README.md
-done
-```
-
-The proposed READMEs reference shared brand assets at
-`https://raw.githubusercontent.com/agent-dispatch/.github/main/profile/assets/wordmark{,-dark}.svg`,
-so deploy the `.github` repo first (step 2) and the images will resolve everywhere.
-
-> ⚠️ The proposed sibling READMEs are written to match each repo's stated purpose. Skim each one and customize package names, API examples, and command surfaces against what you've actually shipped before pushing.
-
-### 4. Website
+### 3. Website
 
 The site is intentionally zero-build — three files plus an assets folder.
 
@@ -123,14 +98,13 @@ Drag-drop the `brand/website` directory. It's all static — no framework, no bu
 
 Recommended: option B with a custom domain. Once live, update README hero links and the OG meta tags in `index.html` to point at the canonical URL.
 
-### 5. Once everything is live
+### 4. Once everything is live
 
-Update three things, in order:
+In order:
 
 1. Set the org avatar (step 1).
-2. Push the `.github` repo (step 2) — this also publishes the wordmark SVGs the other READMEs reference.
-3. Push the per-repo READMEs (step 3).
-4. Publish the website (step 4) and add the canonical URL to:
+2. Push the `.github` repo (step 2) — this publishes the wordmark SVGs.
+3. Publish the website (step 3) and add the canonical URL to:
    - the org profile README ("Learn more →")
    - the mcp-server README header
    - each repo's `package.json` `homepage` field
@@ -139,7 +113,7 @@ Update three things, in order:
 
 If you want to tweak the logo, the two knobs that matter most:
 
-- **Spoke angles.** Currently 0° left, ±28° on the right. Tighter (±15°) reads more focused; wider (±45°) reads more "broadcast". Edit the `x2`/`y2` coordinates in `logo-mark.svg`.
+- **Spoke angles.** Currently 0° middle, ±28° on the right. Tighter (±15°) reads more focused; wider (±45°) reads more "broadcast". Edit the `x2`/`y2` coordinates in `logo-mark.svg`.
 - **Palette.** Violet→cyan is on-trend for AI tooling but easy to change — swap the gradient stops in the `<defs>` block. The whole brand follows from these two colors.
 
 That's the entire kit. Ping me if you want a horizontal social-media banner (1500×500 GitHub-org sized), an animated SVG variant, or a dark-mode preview screenshot of the site.
