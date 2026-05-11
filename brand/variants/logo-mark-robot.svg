@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="AgentDispatch — robot variant">
+  <title>AgentDispatch (robot-in-cloud variant)</title>
+  <rect width="200" height="200" rx="44" fill="#0A0A0A"/>
+
+  <g fill="#FAFAFA">
+    <circle cx="68" cy="104" r="22"/>
+    <circle cx="100" cy="82" r="28"/>
+    <circle cx="136" cy="100" r="24"/>
+    <rect x="58" y="96" width="92" height="36" rx="18"/>
+  </g>
+
+  <rect x="99" y="78" width="4" height="14" rx="2" fill="#0A0A0A"/>
+  <circle cx="101" cy="76" r="3.5" fill="#0A0A0A"/>
+
+  <rect x="78" y="90" width="46" height="40" rx="9" fill="#0A0A0A"/>
+
+  <circle cx="91" cy="108" r="3.2" fill="#FAFAFA"/>
+  <circle cx="111" cy="108" r="3.2" fill="#FAFAFA"/>
+  <rect x="91" y="118" width="20" height="2.5" rx="1.25" fill="#FAFAFA"/>
+</svg>
