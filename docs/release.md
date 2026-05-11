@@ -1,6 +1,6 @@
 # Release Workflow
 
-`@agentdispatch/mcp-server` is published after `@agentdispatch/core`, `@agentdispatch/store-sqlite`, and `@agentdispatch/adapter-aws-agentcore`.
+`@agent-dispatch/mcp-server` is published after `@agent-dispatch/core`, `@agent-dispatch/store-sqlite`, and `@agent-dispatch/adapter-aws-agentcore`.
 
 ## Prerequisites
 

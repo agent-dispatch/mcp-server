@@ -1,7 +1,7 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { describe, expect, it } from "vitest";
-import { RuntimeService, type BackendAdapter, type DispatchRequest, type RuntimeEvent, type RuntimeRecord, type TaskStore } from "@agentdispatch/core";
+import { RuntimeService, type BackendAdapter, type DispatchRequest, type RuntimeEvent, type RuntimeRecord, type TaskStore } from "@agent-dispatch/core";
 import { createAgentDispatchMcpServer } from "../src/index.js";
 
 class MemoryStore implements TaskStore {

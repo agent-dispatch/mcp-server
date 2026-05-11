@@ -1,5 +1,5 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { AgentDispatchError, type DispatchRequest, type RuntimeProfile, type RuntimeService } from "@agentdispatch/core";
+import { AgentDispatchError, type DispatchRequest, type RuntimeProfile, type RuntimeService } from "@agent-dispatch/core";
 import { mcpToolSchemas } from "./schemas.js";
 
 export function createAgentDispatchMcpServer(runtime: RuntimeService): McpServer {

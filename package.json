@@ -1,11 +1,11 @@
 {
-  "name": "@agentdispatch/mcp-server",
+  "name": "@agent-dispatch/mcp-server",
   "version": "0.1.0",
   "description": "Provider-neutral MCP server for AgentDispatch.",
   "type": "module",
   "license": "Apache-2.0",
   "bin": {
-    "agentdispatch-mcp": "./dist/bin.js"
+    "agentdispatch-mcp": "dist/bin.js"
   },
   "exports": {
     ".": {
@@ -13,26 +13,41 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist", "README.md", "LICENSE"],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsup src/index.ts src/bin.ts --format esm --dts --clean",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
-    "@agentdispatch/core": "^0.1.0"
+    "@agent-dispatch/core": "^0.1.0"
   },
   "dependencies": {
-    "@agentdispatch/adapter-aws-agentcore": "file:../agentdispatch-adapter-aws-agentcore",
-    "@agentdispatch/store-sqlite": "file:../agentdispatch-store-sqlite",
+    "@agent-dispatch/adapter-aws-agentcore": "^0.1.0",
+    "@agent-dispatch/store-sqlite": "^0.1.0",
     "@modelcontextprotocol/sdk": "^1.29.0",
     "zod": "^3.24.1"
   },
   "devDependencies": {
-    "@agentdispatch/core": "file:../agentdispatch-core",
+    "@agent-dispatch/core": "^0.1.0",
     "@types/node": "^22.10.2",
     "tsup": "^8.3.5",
     "typescript": "^5.7.3",
     "vitest": "^2.1.8"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agent-dispatch/mcp-server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/agent-dispatch/mcp-server/issues"
+  },
+  "homepage": "https://github.com/agent-dispatch/mcp-server#readme",
+  "publishConfig": {
+    "access": "public"
   }
 }

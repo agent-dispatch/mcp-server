@@ -1,4 +1,4 @@
-# @agentdispatch/mcp-server
+# @agent-dispatch/mcp-server
 
 MCP server exposing provider-neutral AgentDispatch tools.
 

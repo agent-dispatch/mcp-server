@@ -1,8 +1,8 @@
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import { RuntimeService, validateConfig, type AgentDispatchConfig, type BackendAdapter } from "@agentdispatch/core";
-import { AwsAgentCoreAdapter } from "@agentdispatch/adapter-aws-agentcore";
-import { SqliteTaskStore } from "@agentdispatch/store-sqlite";
+import { RuntimeService, validateConfig, type AgentDispatchConfig, type BackendAdapter } from "@agent-dispatch/core";
+import { AwsAgentCoreAdapter } from "@agent-dispatch/adapter-aws-agentcore";
+import { SqliteTaskStore } from "@agent-dispatch/store-sqlite";
 
 export interface RuntimeBootstrapOptions {
   configPath?: string;
