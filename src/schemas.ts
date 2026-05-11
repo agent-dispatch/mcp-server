@@ -8,6 +8,7 @@ export const dispatchTaskInputSchema = z.object({
   task_type: z.string(),
   target: z.object({
     mode: z.string(),
+    protocol: z.string().optional(),
     details: z.record(z.unknown()).optional()
   }),
   input: z.record(z.unknown()),
@@ -19,15 +20,18 @@ export const listCapabilitiesInputSchema = z.object({
 });
 
 export const spawnCloudAgentInputSchema = z.object({
-  instruction: z.string(),
+  instruction: z.string().optional(),
   runtime: z.string().optional(),
   context: z.record(z.unknown()).optional(),
+  protocol: z.string().optional(),
   framework: z.string().optional(),
+  model: z.union([z.string(), z.record(z.unknown())]).optional(),
   runtime_tools: z.record(z.unknown()).optional(),
   provider: z.string().optional(),
   account_profile: z.string().optional(),
   target: z.object({
     mode: z.string().optional(),
+    protocol: z.string().optional(),
     details: z.record(z.unknown()).optional()
   }).optional(),
   metadata: z.record(z.unknown()).optional()

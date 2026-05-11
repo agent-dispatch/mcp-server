@@ -8,7 +8,7 @@ describe("MCP schemas", () => {
       account_profile: "prod-gcp",
       capability: "service-deploy",
       task_type: "service.deploy",
-      target: { mode: "managed-service" },
+      target: { mode: "managed-service", protocol: "http" },
       input: { image: "gcr.io/project/service:latest", service_name: "api" }
     });
 
@@ -39,6 +39,8 @@ describe("MCP schemas", () => {
       runtime: "research-agent",
       instruction: "Run this in the cloud",
       context: { repo: "agent-dispatch" },
+      protocol: "a2a",
+      model: { provider: "bedrock", modelId: "anthropic.claude-3-5-sonnet" },
       runtime_tools: { enabled: ["web-search"] }
     });
 
@@ -46,6 +48,8 @@ describe("MCP schemas", () => {
       runtime: "research-agent",
       instruction: "Run this in the cloud",
       context: { repo: "agent-dispatch" },
+      protocol: "a2a",
+      model: { provider: "bedrock", modelId: "anthropic.claude-3-5-sonnet" },
       runtime_tools: { enabled: ["web-search"] }
     });
   });

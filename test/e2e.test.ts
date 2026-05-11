@@ -51,6 +51,21 @@ function mockAdapter(events: RuntimeEvent[]): BackendAdapter {
     name: "mock-agent-runtime",
     provider: "aws",
     capabilities: () => [{ provider: "aws", capability: "agent-runtime", taskTypes: ["agent.run"], targetModes: ["session"] }],
+    prepareTask: async ({ dispatch }) => ({
+      providerRefs: { runtimeSessionId: "agentcore_session_mock" },
+      cloudAgent: {
+        protocol: dispatch.target.protocol ?? "a2a",
+        provider: "aws",
+        backend: "mock-agent-runtime",
+        accountProfile: dispatch.accountProfile,
+        sessionId: "agentcore_session_mock",
+        providerRefs: { runtimeSessionId: "agentcore_session_mock" },
+        a2a: {
+          transport: "json-rpc-2.0-http",
+          messageMethod: "message/send"
+        }
+      }
+    }),
     resolveTarget: async (request) => ({
       account: { name: request.accountProfile, provider: request.provider, credentialSource: "test" },
       target: { provider: request.provider, accountProfile: request.accountProfile, capability: request.capability, backend: "mock-agent-runtime", mode: request.target.mode }
@@ -85,8 +100,10 @@ function createRuntime(adapter = mockAdapter([{ taskId: "ignored", type: "task.l
           account: "dev-aws",
           capability: "agent-runtime",
           backend: "mock-agent-runtime",
-          target: { mode: "session", details: { runtimeArn: "arn:aws:bedrock-agentcore:test" } },
+          protocol: "a2a",
+          target: { mode: "session", protocol: "a2a", details: { runtimeArn: "arn:aws:bedrock-agentcore:test" } },
           framework: "echo",
+          model: { provider: "bedrock", modelId: "anthropic.claude-3-5-sonnet" },
           runtimeTools: { enabled: ["web-search"] }
         }
       },
@@ -168,19 +185,31 @@ describe("MCP tool invocation", () => {
         instruction: "run through spawn_cloud_agent",
         context: { repo: "agent-dispatch" }
       });
-      expect(handle).toMatchObject({ provider: "aws", capability: "agent-runtime", backend: "mock-agent-runtime" });
+      expect(handle).toMatchObject({
+        provider: "aws",
+        capability: "agent-runtime",
+        backend: "mock-agent-runtime",
+        cloudAgent: {
+          protocol: "a2a",
+          sessionId: "agentcore_session_mock",
+          a2a: { messageMethod: "message/send" }
+        }
+      });
 
       await expect(waitForTerminalStatus(client, handle.taskId)).resolves.toMatchObject({
         taskType: "agent.run",
         backend: "mock-agent-runtime",
         target: {
           mode: "session",
+          protocol: "a2a",
           details: { runtimeArn: "arn:aws:bedrock-agentcore:test" }
         },
         input: {
           instruction: "run through spawn_cloud_agent",
           context: { repo: "agent-dispatch" },
+          protocol: "a2a",
           framework: "echo",
+          model: { provider: "bedrock", modelId: "anthropic.claude-3-5-sonnet" },
           runtime_tools: { enabled: ["web-search"] }
         }
       });
@@ -201,6 +230,23 @@ describe("MCP tool invocation", () => {
         target: { mode: "session" },
         input: { instruction: "run" }
       })).rejects.toThrow();
+    } finally {
+      await client.close();
+      await server.close();
+    }
+  });
+
+  it("returns structured clarification when spawn input is incomplete", async () => {
+    const { client, server } = await createClient();
+    try {
+      const response = await callJson(client, "spawn_cloud_agent", {});
+      expect(response).toMatchObject({
+        status: "needs_clarification",
+        retry_tool: "spawn_cloud_agent",
+        questions: expect.arrayContaining([
+          expect.objectContaining({ id: "instruction" })
+        ])
+      });
     } finally {
       await client.close();
       await server.close();

@@ -46,6 +46,9 @@ export function createRuntimeCheckReport(runtime: RuntimeService) {
       account: runtimeProfile.account,
       capability: runtimeProfile.capability,
       backend: runtimeProfile.backend,
+      protocol: runtimeProfile.protocol ?? runtimeProfile.target?.protocol,
+      framework: runtimeProfile.framework,
+      model: runtimeProfile.model,
       target: runtimeProfile.target
     }))
   };
@@ -64,6 +67,7 @@ function createConfiguredAdapters(config: AgentDispatchConfig): BackendAdapter[]
       region: account.region ?? String(backend.details?.region ?? process.env.AWS_REGION ?? "us-east-1"),
       runtimeArn: optionalString(backend.details?.runtimeArn ?? process.env.AGENTDISPATCH_AGENTCORE_RUNTIME_ARN),
       qualifier: optionalString(backend.details?.qualifier) ?? "DEFAULT",
+      protocol: optionalString(backend.details?.protocol ?? process.env.AGENTDISPATCH_AGENTCORE_PROTOCOL),
       defaultExecutionRoleArn: optionalString(backend.details?.defaultExecutionRoleArn),
       deleteRuntimeOnCompletion: backend.details?.deleteRuntimeOnCompletion !== false
     }));
