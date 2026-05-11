@@ -29,20 +29,21 @@ The new `mcp-server` README (the viral entry point) is already in place at the r
 
 | Token | Value |
 | --- | --- |
-| Background (dark) | `#0B1020` |
-| Surface (card) | `#131A2E` |
-| Border | `#1F2A44` |
-| Text | `#E2E8F0` |
-| Text muted | `#94A3B8` |
-| Accent (violet deep / on light) | `#7C3AED` |
-| Accent (cyan deep / on light) | `#06B6D4` |
-| Accent (violet light / on dark) | `#A78BFA` |
-| Accent (cyan light / on dark) | `#22D3EE` |
-| Gradient | `#7C3AED → #06B6D4` (or light variants on dark backgrounds) |
-| Typeface | Inter (UI / docs), system-ui fallback |
-| Code typeface | ui-monospace / JetBrains Mono |
+| Ink (text + dark surfaces) | `#0A0A0A` |
+| Ink-soft (secondary dark) | `#18181B` |
+| Paper (light surface) | `#FAFAFA` |
+| Paper-soft (subtle fill) | `#F4F4F5` |
+| Line | `#E4E4E7` |
+| Line-strong | `#D4D4D8` |
+| Muted text | `#52525B` |
+| Muted-soft text | `#71717A` |
+| Accent (CTAs, highlights only) | `#FF5C00` |
+| Display typeface | Inter (UI/docs), system-ui fallback |
+| Mono typeface | ui-monospace / JetBrains Mono |
 
-The logo mark is a **cloud spawning agents**: a soft cloud silhouette (the dispatcher) with three short spokes fanning to three small agent tiles. It reads literally as "cloud → spawn agents" — the system's job in one shape.
+**No gradients. No glow. No emoji-as-logo.** The mark is mono­chrome ink-on-paper (or paper-on-ink) with a single forward chevron knocked out of the cloud silhouette. The accent orange is used sparingly — CTA hover state, the eyebrow dot on the scroll-scrub, one or two terminal highlights — and never on the logo itself.
+
+The logo mark is a **cloud silhouette with a forward chevron** cut out of the right-hand bump. It reads as "cloud, dispatched" without resorting to illustration, gradient, or glow. The wordmark is `AgentDispatch` set in Inter ExtraBold at -2.8% tracking, no decorative effects.
 
 ## How to deploy each piece
 
@@ -113,7 +114,9 @@ In order:
 
 If you want to tweak the logo, the two knobs that matter most:
 
-- **Spoke angles.** Currently 0° middle, ±28° on the right. Tighter (±15°) reads more focused; wider (±45°) reads more "broadcast". Edit the `x2`/`y2` coordinates in `logo-mark.svg`.
-- **Palette.** Violet→cyan is on-trend for AI tooling but easy to change — swap the gradient stops in the `<defs>` block. The whole brand follows from these two colors.
+- **Chevron weight.** Currently `stroke-width=13` in `logo-mark.svg`. Lighter (8–10) feels more refined; heavier (15–17) feels more confident. Pair the change with the wordmark's `stroke-width=10.5` proportionally.
+- **Cloud proportions.** The three circles + base rect can be nudged: a slightly taller cloud reads more "weather-icon", a wider/flatter one reads more "infrastructure". Same goes for the chevron — its position determines whether the cloud feels active or passive.
 
-That's the entire kit. Ping me if you want a horizontal social-media banner (1500×500 GitHub-org sized), an animated SVG variant, or a dark-mode preview screenshot of the site.
+The website's scroll-scrub timing lives in `brand/website/script.js` — `apply(p)`. Each frame (editor, dispatch, cloud, agent tiles, return) is driven by a `ramp(p, start, end)` or `band(p, start, end)` call you can retune without touching markup or CSS.
+
+That's the entire kit. Ping me for: a horizontal social-media banner (1500×500 GitHub-org sized), a video / Lottie variant of the scrub for embedding outside the site, or printable brand-guideline PDF.

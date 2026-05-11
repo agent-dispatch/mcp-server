@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AgentDispatch — spawn cloud agents from your AI</title>
   <meta name="description" content="Claude Code, OpenClaw, and Hermes plan brilliantly — and choke on multi-hour work. AgentDispatch hands them a managed cloud runtime. One MCP call. Results when they land." />
-  <meta name="theme-color" content="#0B1020" />
-  <meta property="og:title" content="AgentDispatch — cloud agents for your AI" />
-  <meta property="og:description" content="Spawn long-running cloud agents from Claude Code, OpenClaw, or Hermes. One MCP call. Bring your own cloud. Results when they land." />
+  <meta name="theme-color" content="#FAFAFA" />
+  <meta property="og:title" content="AgentDispatch — spawn cloud agents from your AI" />
+  <meta property="og:description" content="Plan locally. Run in the cloud. Spawn long-running agents from any MCP client." />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="./assets/og.svg" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -18,141 +18,251 @@
 </head>
 <body>
   <header class="nav" aria-label="Primary">
-    <a class="brand" href="#top" aria-label="AgentDispatch home">
+    <a class="brand" href="#top" aria-label="AgentDispatch">
       <svg class="brand-mark" viewBox="0 0 200 200" aria-hidden="true">
-        <defs>
-          <linearGradient id="nv-grad" x1="0" y1="40" x2="200" y2="200" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stop-color="#C4B5FD"/>
-            <stop offset="0.55" stop-color="#A78BFA"/>
-            <stop offset="1" stop-color="#22D3EE"/>
-          </linearGradient>
-          <linearGradient id="nv-tile" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stop-color="#67E8F9"/>
-            <stop offset="1" stop-color="#22D3EE"/>
-          </linearGradient>
-        </defs>
-        <rect width="200" height="200" rx="44" fill="#0B1020"/>
-        <g stroke="url(#nv-grad)" stroke-width="6.5" stroke-linecap="round" fill="none">
-          <line x1="118" y1="86" x2="165" y2="56"/>
-          <line x1="122" y1="100" x2="170" y2="100"/>
-          <line x1="118" y1="114" x2="165" y2="144"/>
+        <rect width="200" height="200" rx="44" fill="currentColor"/>
+        <g fill="var(--paper)">
+          <circle cx="68" cy="104" r="22"/>
+          <circle cx="100" cy="82" r="28"/>
+          <circle cx="136" cy="100" r="24"/>
+          <rect x="58" y="96" width="92" height="36" rx="18"/>
         </g>
-        <g fill="url(#nv-grad)">
-          <circle cx="50" cy="108" r="22"/>
-          <circle cx="78" cy="82" r="28"/>
-          <circle cx="110" cy="100" r="22"/>
-          <rect x="42" y="102" width="72" height="26" rx="13"/>
-        </g>
-        <g>
-          <rect x="155" y="46" width="22" height="22" rx="5.5" fill="url(#nv-tile)"/>
-          <rect x="160" y="89" width="22" height="22" rx="5.5" fill="url(#nv-tile)"/>
-          <rect x="155" y="134" width="22" height="22" rx="5.5" fill="url(#nv-tile)"/>
-        </g>
+        <path d="M 108 86 L 138 110 L 108 134" stroke="currentColor" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
       </svg>
       <span class="brand-text">AgentDispatch</span>
     </a>
     <nav class="nav-links">
-      <a href="#made-for">Made for</a>
+      <a href="#problem">Problem</a>
+      <a href="#how">How it works</a>
       <a href="#install">Install</a>
-      <a href="#architecture">Architecture</a>
-      <a href="#repos">Packages</a>
-      <a class="cta" href="https://github.com/agent-dispatch">GitHub →</a>
+      <a href="#stack">Packages</a>
+      <a class="cta-link" href="https://github.com/agent-dispatch">GitHub →</a>
     </nav>
   </header>
 
   <main id="top">
-    <section class="hero">
-      <div class="orbit" aria-hidden="true"></div>
-      <div class="hero-inner">
-        <p class="eyebrow">☁️ &nbsp;CLOUD AGENTS &nbsp;·&nbsp; ONE MCP CALL &nbsp;·&nbsp; BRING YOUR OWN CLOUD</p>
-        <h1>
-          Spawn <span class="grad">cloud agents</span><br/>
-          from your AI.
-        </h1>
-        <p class="lede">
-          Claude Code, OpenClaw, and Hermes plan brilliantly — and choke on multi-hour work.
-          AgentDispatch hands them a managed cloud runtime: one MCP call, results when they land.
-        </p>
-        <div class="cta-row">
-          <a class="btn primary" href="#install">Get started</a>
-          <a class="btn ghost" href="https://github.com/agent-dispatch/mcp-server">View MCP server →</a>
+
+    <!-- ─── SCROLL-SCRUB HERO ───────────────────────────────────────── -->
+    <section class="scrub" id="hero" aria-label="How dispatch works">
+      <div class="scrub-track">
+        <div class="scrub-stage">
+          <div class="scrub-eyebrow">
+            <span class="dot"></span>
+            <span class="eyebrow-text">SCROLL TO SEE IT WORK</span>
+          </div>
+
+          <h1 class="scrub-headline">
+            Spawn <span class="accent">cloud agents</span><br/>
+            from your AI.
+          </h1>
+
+          <div class="scrub-illustration" aria-hidden="true">
+            <svg viewBox="0 0 1200 460" preserveAspectRatio="xMidYMid meet">
+              <defs>
+                <marker id="head-out" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="6" markerHeight="6" orient="auto">
+                  <path d="M0,0 L12,6 L0,12 Z" fill="#0A0A0A"/>
+                </marker>
+                <marker id="head-back" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="6" markerHeight="6" orient="auto">
+                  <path d="M0,0 L12,6 L0,12 Z" fill="#71717A"/>
+                </marker>
+              </defs>
+
+              <!-- ───────── Editor panel (left) ───────── -->
+              <g class="frame editor">
+                <rect x="60" y="60" width="460" height="320" rx="14" fill="#0A0A0A"/>
+                <rect x="60" y="60" width="460" height="38" rx="14" fill="#18181B"/>
+                <circle cx="86" cy="79" r="6" fill="#3F3F46"/>
+                <circle cx="106" cy="79" r="6" fill="#3F3F46"/>
+                <circle cx="126" cy="79" r="6" fill="#3F3F46"/>
+                <text x="266" y="84" font-family="ui-sans-serif, Inter, sans-serif" font-size="13" font-weight="500" fill="#52525B" text-anchor="middle">claude-code · agentdispatch</text>
+
+                <g font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="15" fill="#A1A1AA">
+                  <text x="86" y="148"><tspan fill="#71717A">// 1.</tspan> One MCP tool. One line.</text>
+                  <text x="86" y="186">
+                    <tspan class="kw" fill="#FAFAFA">spawn_cloud_agent</tspan><tspan fill="#71717A">({ </tspan>
+                  </text>
+                  <text x="106" y="212">
+                    <tspan fill="#71717A">instruction:</tspan>
+                    <tspan class="prompt-text" fill="#FF8A4C"> "Audit every Lambda for public invoke."</tspan>
+                  </text>
+                  <text x="86" y="238"><tspan fill="#71717A">})</tspan></text>
+                </g>
+
+                <g class="result-line">
+                  <line x1="86" y1="282" x2="494" y2="282" stroke="#27272A"/>
+                  <text x="86" y="312" font-family="ui-monospace, monospace" font-size="14" fill="#71717A">// ← result</text>
+                  <text x="86" y="338" font-family="ui-monospace, monospace" font-size="14">
+                    <tspan fill="#A1A1AA">{ </tspan>
+                    <tspan fill="#FAFAFA">findings: </tspan>
+                    <tspan fill="#FF8A4C">7</tspan>
+                    <tspan fill="#A1A1AA">, </tspan>
+                    <tspan fill="#FAFAFA">duration: </tspan>
+                    <tspan fill="#FF8A4C">"42m"</tspan>
+                    <tspan fill="#A1A1AA"> }</tspan>
+                  </text>
+                </g>
+              </g>
+
+              <!-- ───────── Dispatch line (editor → cloud) ───────── -->
+              <g class="frame dispatch">
+                <path class="dispatch-line"
+                      d="M 530 218 L 720 218"
+                      stroke="#0A0A0A" stroke-width="2.5" fill="none"
+                      marker-end="url(#head-out)"
+                      pathLength="100"
+                      stroke-dasharray="100"
+                      stroke-dashoffset="100"/>
+                <text x="625" y="204" text-anchor="middle"
+                      font-family="ui-monospace, monospace" font-size="12" font-weight="600"
+                      fill="#FF5C00" letter-spacing="0.05em">DISPATCH</text>
+              </g>
+
+              <!-- ───────── Cloud (right) ───────── -->
+              <g class="frame cloud" transform="translate(740, 80)">
+                <g fill="#0A0A0A">
+                  <circle cx="80" cy="160" r="44"/>
+                  <circle cx="160" cy="120" r="56"/>
+                  <circle cx="248" cy="156" r="48"/>
+                  <rect x="64" y="142" width="200" height="80" rx="40"/>
+                </g>
+
+                <!-- Three agent tiles inside the cloud, spawning -->
+                <g class="agent-tiles">
+                  <g class="tile tile-1" transform="translate(86, 132)">
+                    <rect width="42" height="42" rx="9" fill="#FAFAFA"/>
+                    <path d="M 14 12 L 30 21 L 14 30 Z" fill="#0A0A0A"/>
+                  </g>
+                  <g class="tile tile-2" transform="translate(141, 110)">
+                    <rect width="42" height="42" rx="9" fill="#FAFAFA"/>
+                    <path d="M 14 12 L 30 21 L 14 30 Z" fill="#0A0A0A"/>
+                  </g>
+                  <g class="tile tile-3" transform="translate(202, 140)">
+                    <rect width="42" height="42" rx="9" fill="#FAFAFA"/>
+                    <path d="M 14 12 L 30 21 L 14 30 Z" fill="#0A0A0A"/>
+                  </g>
+                </g>
+
+                <!-- Provider label under cloud -->
+                <text x="164" y="282" text-anchor="middle"
+                      font-family="ui-monospace, monospace" font-size="11" font-weight="600"
+                      fill="#A1A1AA" letter-spacing="0.08em">AWS BEDROCK AGENTCORE</text>
+              </g>
+
+              <!-- ───────── Return path (cloud → editor) ───────── -->
+              <g class="frame return">
+                <path class="return-line"
+                      d="M 760 320 Q 660 380 540 330"
+                      stroke="#71717A" stroke-width="1.5" stroke-dasharray="4 4" fill="none"
+                      marker-end="url(#head-back)"
+                      pathLength="100"
+                      stroke-dashoffset="100"/>
+                <text x="650" y="394" text-anchor="middle"
+                      font-family="ui-monospace, monospace" font-size="11" font-weight="500"
+                      fill="#71717A" letter-spacing="0.05em">status · logs · result</text>
+              </g>
+            </svg>
+          </div>
+
+          <div class="captions">
+            <p class="caption" data-step="0">Local AI assistants plan brilliantly. They choke on multi-hour work.</p>
+            <p class="caption" data-step="1">One MCP tool — <code>spawn_cloud_agent</code> — sends the heavy lift away.</p>
+            <p class="caption" data-step="2">AgentDispatch routes it to managed cloud compute.</p>
+            <p class="caption" data-step="3">Real agents run for as long as the work takes. Your chat stays light.</p>
+            <p class="caption" data-step="4">Status, logs, and the final result return over the same MCP channel.</p>
+          </div>
+
+          <div class="scrub-progress" aria-hidden="true">
+            <div class="scrub-progress-bar"></div>
+          </div>
         </div>
-        <div class="badge-row">
-          <span class="badge">AWS Bedrock AgentCore</span>
-          <span class="badge">MCP 1.x</span>
-          <span class="badge">Strands today · BYO framework</span>
-          <span class="badge">Apache-2.0</span>
+      </div>
+    </section>
+
+    <!-- ─── THE PROBLEM ─────────────────────────────────────────────── -->
+    <section class="section problem" id="problem">
+      <div class="container narrow">
+        <p class="kicker">The problem</p>
+        <h2 class="display">Your AI assistant is great at planning.<br/><span class="muted">It runs out of room the moment work gets long.</span></h2>
+      </div>
+
+      <div class="container">
+        <div class="problem-grid">
+          <article class="problem-card">
+            <div class="problem-badge">In the chat today</div>
+            <ul>
+              <li>Multi-hour audits run inline and burn the context window.</li>
+              <li>A deep-research sweep blocks every other tool call.</li>
+              <li>Close the laptop and the run dies.</li>
+              <li>Parallel work is sequential by default.</li>
+              <li>Tools cap at what the local process can reach.</li>
+            </ul>
+          </article>
+          <article class="problem-card outcome">
+            <div class="problem-badge accent">With AgentDispatch</div>
+            <ul>
+              <li>Long work moves to a managed cloud worker.</li>
+              <li>One MCP call returns a <code>task_id</code> — chat keeps moving.</li>
+              <li>Runs survive disconnects. Pick up the result later.</li>
+              <li>Fan out a fleet in parallel; aggregate in chat.</li>
+              <li>Cloud-side tools, credentials, and compute the laptop never sees.</li>
+            </ul>
+          </article>
         </div>
       </div>
     </section>
 
-    <section id="made-for" class="made-for">
-      <h2 class="section-title">Made for the agents you already ship with</h2>
-      <p class="section-lede">
-        Plan locally. Run in the cloud. Get results back in chat. No new SDKs, no new auth, no new UI — just one more MCP server in the config you already have.
-      </p>
-      <div class="grid agent-grid">
-        <article class="agent-card">
-          <div class="agent-name">Claude Code</div>
-          <p>Fan out parallel cloud agents to audit services, refactor across packages, or grind through long codebase research while the local session stays snappy.</p>
-        </article>
-        <article class="agent-card">
-          <div class="agent-name">OpenClaw</div>
-          <p>Plan in OpenClaw, execute in the cloud. Deep-research runs and tool-heavy jobs come back as a single tool response — no token bloat in the local session.</p>
-        </article>
-        <article class="agent-card">
-          <div class="agent-name">Hermes</div>
-          <p>Hermes hands its multi-hour reasoning and tool-rich runs to managed compute — close the laptop, pick the result up later.</p>
-        </article>
+    <!-- ─── HOW IT WORKS ────────────────────────────────────────────── -->
+    <section class="section how" id="how">
+      <div class="container narrow">
+        <p class="kicker">How it works</p>
+        <h2 class="display">A single tool. A small contract. A real cloud.</h2>
       </div>
-      <p class="footnote">Any MCP-compatible client works — these three are the common ones today.</p>
-    </section>
 
-    <section id="why" class="features">
-      <h2 class="section-title">The one tool your assistant was missing</h2>
-      <p class="section-lede">
-        Local agents already have tools. AgentDispatch adds the one they didn't have: a way to start real work in the cloud and pick the result up later.
-      </p>
-      <div class="grid features-grid">
-        <article class="card">
-          <div class="card-icon">☁️</div>
-          <h3>Real cloud, not your laptop</h3>
-          <p>Managed AWS Bedrock AgentCore today. New clouds plug in through one small adapter contract — your code doesn't move.</p>
+      <div class="container how-grid">
+        <article class="step">
+          <span class="step-num">01</span>
+          <h3>Your assistant calls one tool</h3>
+          <p>Claude Code, OpenClaw, Hermes — any MCP client — calls <code>spawn_cloud_agent</code> with an instruction.</p>
         </article>
-        <article class="card">
-          <div class="card-icon">⏱️</div>
-          <h3>Built for marathons</h3>
-          <p>Sessions for stateful runs. Jobs for hours-long work. Sync for fast turn-around. Same API, three modes.</p>
+        <article class="step">
+          <span class="step-num">02</span>
+          <h3>AgentDispatch routes the work</h3>
+          <p>The dispatcher resolves a runtime profile, persists a task, and invokes the right adapter for your cloud.</p>
         </article>
-        <article class="card">
-          <div class="card-icon">🔭</div>
-          <h3>Always observable</h3>
-          <p>Status, paginated logs, results, cancellation — over MCP, the SDK, and the CLI. Your assistant always knows what the cloud is doing.</p>
+        <article class="step">
+          <span class="step-num">03</span>
+          <h3>A real cloud agent runs</h3>
+          <p>The worker runs on managed compute (AWS Bedrock AgentCore today) — for seconds, minutes, or hours.</p>
         </article>
-        <article class="card">
-          <div class="card-icon">🪶</div>
-          <h3>Boring defaults</h3>
-          <p>SQLite for state. stdio for transport. Zero hidden services. Runs on a laptop, in CI, and on a server.</p>
+        <article class="step">
+          <span class="step-num">04</span>
+          <h3>You collect the result</h3>
+          <p>Status, paginated logs, and the final payload all stream back through the same MCP channel.</p>
         </article>
       </div>
     </section>
 
-    <section id="install" class="install">
-      <h2 class="section-title">Three faces, one runtime</h2>
-      <p class="section-lede">Pick the entry point that fits — they all talk to the same dispatcher.</p>
-
-      <div class="tabs" role="tablist">
-        <button class="tab active" role="tab" data-tab="mcp">MCP (Claude Code, OpenClaw, Hermes)</button>
-        <button class="tab" role="tab" data-tab="sdk">SDK (TypeScript)</button>
-        <button class="tab" role="tab" data-tab="cli">CLI</button>
+    <!-- ─── INSTALL / TABS ──────────────────────────────────────────── -->
+    <section class="section install" id="install">
+      <div class="container narrow">
+        <p class="kicker">Install</p>
+        <h2 class="display">Three faces. One runtime.</h2>
+        <p class="lede">Pick the entry point that fits — they all talk to the same dispatcher.</p>
       </div>
 
-      <div class="tab-panel active" data-panel="mcp">
-        <pre><code><span class="c-c">$</span> npm install @agent-dispatch/core @agent-dispatch/mcp-server \
+      <div class="container install-block">
+        <div class="tabs" role="tablist">
+          <button class="tab active" role="tab" data-tab="mcp">MCP server</button>
+          <button class="tab" role="tab" data-tab="sdk">TypeScript SDK</button>
+          <button class="tab" role="tab" data-tab="cli">CLI</button>
+        </div>
+
+        <div class="tab-panel active" data-panel="mcp">
+          <pre><code><span class="c-c">$</span> npm install @agent-dispatch/core @agent-dispatch/mcp-server \
     @agent-dispatch/store-sqlite @agent-dispatch/adapter-aws-agentcore
 
 <span class="c-c">$</span> npx agentdispatch-mcp --config agentdispatch.config.json --check</code></pre>
-        <pre><code><span class="c-c">// Claude Code / Claude Desktop / Cursor / any MCP client</span>
+          <pre><code><span class="c-c">// Claude Code · OpenClaw · Hermes · any MCP client</span>
 {
   <span class="c-k">"mcpServers"</span>: {
     <span class="c-k">"agentdispatch"</span>: {
@@ -161,157 +271,103 @@
     }
   }
 }</code></pre>
-      </div>
+        </div>
 
-      <div class="tab-panel" data-panel="sdk">
-        <pre><code><span class="c-c">$</span> npm install @agent-dispatch/sdk @agent-dispatch/core</code></pre>
-        <pre><code><span class="c-k">import</span> { createClient } <span class="c-k">from</span> <span class="c-s">"@agent-dispatch/sdk"</span>;
+        <div class="tab-panel" data-panel="sdk">
+          <pre><code><span class="c-c">$</span> npm install @agent-dispatch/sdk @agent-dispatch/core</code></pre>
+          <pre><code><span class="c-k">import</span> { createClient } <span class="c-k">from</span> <span class="c-s">"@agent-dispatch/sdk"</span>;
 
 <span class="c-k">const</span> client = createClient({ configPath: <span class="c-s">"agentdispatch.config.json"</span> });
 
 <span class="c-k">const</span> { taskId } = <span class="c-k">await</span> client.spawnCloudAgent({
-  instruction: <span class="c-s">"Audit every Lambda in this account for public invoke."</span>,
+  instruction: <span class="c-s">"Audit every Lambda for public invoke."</span>,
   runtime: <span class="c-s">"security-agent"</span>
 });
 
 <span class="c-k">for await</span> (<span class="c-k">const</span> event <span class="c-k">of</span> client.streamTask(taskId)) console.log(event);</code></pre>
-      </div>
+        </div>
 
-      <div class="tab-panel" data-panel="cli">
-        <pre><code><span class="c-c">$</span> npm install -g @agent-dispatch/cli
+        <div class="tab-panel" data-panel="cli">
+          <pre><code><span class="c-c">$</span> npm install -g @agent-dispatch/cli
 
 <span class="c-c">$</span> agentdispatch check --config agentdispatch.config.json
 <span class="c-c">$</span> agentdispatch spawn <span class="c-s">"Investigate this stack trace across all services."</span>
 <span class="c-c">$</span> agentdispatch logs &lt;task-id&gt; --follow
 <span class="c-c">$</span> agentdispatch result &lt;task-id&gt;</code></pre>
+        </div>
       </div>
     </section>
 
-    <section id="architecture" class="arch">
-      <h2 class="section-title">How it fits together</h2>
-      <p class="section-lede">
-        Your local AI assistant calls a tool. AgentDispatch picks a capability, persists the task,
-        invokes a worker in the cloud, and streams status and logs back through the same path.
-      </p>
-      <div class="arch-diagram">
-        <svg viewBox="0 0 1000 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="AgentDispatch architecture">
-          <defs>
-            <linearGradient id="a-grad" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stop-color="#7C3AED"/>
-              <stop offset="1" stop-color="#06B6D4"/>
-            </linearGradient>
-            <marker id="a-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-              <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
-            </marker>
-          </defs>
+    <!-- ─── PACKAGES ────────────────────────────────────────────────── -->
+    <section class="section stack" id="stack">
+      <div class="container narrow">
+        <p class="kicker">The stack</p>
+        <h2 class="display">Nine small packages. One focused job each.</h2>
+      </div>
 
-          <g font-family="Inter, sans-serif" font-size="16" fill="#E2E8F0" text-anchor="middle">
-            <g>
-              <rect x="60"  y="40" width="220" height="60" rx="12" fill="#11172A" stroke="#1F2A44"/>
-              <text x="170" y="68" font-weight="600">Claude Code</text>
-              <text x="170" y="88" fill="#94A3B8" font-size="13">local assistant</text>
-
-              <rect x="390" y="40" width="220" height="60" rx="12" fill="#11172A" stroke="#1F2A44"/>
-              <text x="500" y="68" font-weight="600">OpenClaw</text>
-              <text x="500" y="88" fill="#94A3B8" font-size="13">local assistant</text>
-
-              <rect x="720" y="40" width="220" height="60" rx="12" fill="#11172A" stroke="#1F2A44"/>
-              <text x="830" y="68" font-weight="600">Hermes</text>
-              <text x="830" y="88" fill="#94A3B8" font-size="13">local assistant</text>
-            </g>
-
-            <g stroke="#94A3B8" stroke-width="1.5" fill="none" marker-end="url(#a-arrow)">
-              <line x1="170" y1="100" x2="490" y2="190"/>
-              <line x1="500" y1="100" x2="500" y2="190"/>
-              <line x1="830" y1="100" x2="510" y2="190"/>
-            </g>
-
-            <rect x="320" y="200" width="360" height="80" rx="14" fill="url(#a-grad)"/>
-            <text x="500" y="234" font-weight="700" fill="#FFFFFF" font-size="20">AgentDispatch (MCP server + core)</text>
-            <text x="500" y="262" fill="#FFFFFF" opacity="0.85" font-size="14">spawn · status · logs · result · cancel</text>
-
-            <g stroke="#94A3B8" stroke-width="1.5" fill="none" marker-end="url(#a-arrow)">
-              <line x1="420" y1="280" x2="240" y2="360"/>
-              <line x1="500" y1="280" x2="500" y2="360"/>
-              <line x1="580" y1="280" x2="760" y2="360"/>
-            </g>
-
-            <g>
-              <rect x="120" y="360" width="240" height="60" rx="12" fill="#11172A" stroke="#1F2A44"/>
-              <text x="240" y="396">store · SQLite + files</text>
-
-              <rect x="380" y="360" width="240" height="60" rx="12" fill="#11172A" stroke="#1F2A44"/>
-              <text x="500" y="396">adapter · AWS AgentCore</text>
-
-              <rect x="640" y="360" width="240" height="60" rx="12" fill="#11172A" stroke="#1F2A44"/>
-              <text x="760" y="388">cloud worker</text>
-              <text x="760" y="408" font-size="13" fill="#94A3B8">runs the long task</text>
-            </g>
-
-            <g stroke="#94A3B8" stroke-width="1.5" fill="none" marker-end="url(#a-arrow)">
-              <line x1="620" y1="390" x2="640" y2="390"/>
-            </g>
-          </g>
-        </svg>
+      <div class="container">
+        <div class="stack-grid">
+          <a class="stack-card primary" href="https://github.com/agent-dispatch/mcp-server">
+            <div class="card-row">
+              <span class="card-name">mcp-server</span>
+              <span class="card-pill">Entry point</span>
+            </div>
+            <p>The MCP face. Hand it to Claude Code, OpenClaw, or Hermes.</p>
+          </a>
+          <a class="stack-card" href="https://github.com/agent-dispatch/core">
+            <div class="card-row"><span class="card-name">core</span></div>
+            <p>Runtime contracts and the dispatch loop.</p>
+          </a>
+          <a class="stack-card" href="https://github.com/agent-dispatch/sdk-js">
+            <div class="card-row"><span class="card-name">sdk-js</span></div>
+            <p>Typed TypeScript SDK for application code.</p>
+          </a>
+          <a class="stack-card" href="https://github.com/agent-dispatch/cli">
+            <div class="card-row"><span class="card-name">cli</span></div>
+            <p>Spawn, inspect, and cancel agents from the terminal.</p>
+          </a>
+          <a class="stack-card" href="https://github.com/agent-dispatch/store-sqlite">
+            <div class="card-row"><span class="card-name">store-sqlite</span></div>
+            <p>Default SQLite + filesystem state store.</p>
+          </a>
+          <a class="stack-card" href="https://github.com/agent-dispatch/adapter-aws-agentcore">
+            <div class="card-row"><span class="card-name">adapter-aws-agentcore</span></div>
+            <p>AWS Bedrock AgentCore adapter.</p>
+          </a>
+          <a class="stack-card" href="https://github.com/agent-dispatch/worker-agentcore">
+            <div class="card-row"><span class="card-name">worker-agentcore</span></div>
+            <p>Standard AgentCore worker contract.</p>
+          </a>
+          <a class="stack-card" href="https://github.com/agent-dispatch/adapter-template">
+            <div class="card-row"><span class="card-name">adapter-template</span></div>
+            <p>Starter scaffolding for new cloud adapters.</p>
+          </a>
+          <a class="stack-card" href="https://github.com/agent-dispatch/docs">
+            <div class="card-row"><span class="card-name">docs</span></div>
+            <p>Guides, architecture, and reference.</p>
+          </a>
+        </div>
       </div>
     </section>
 
-    <section id="repos" class="repos">
-      <h2 class="section-title">The stack</h2>
-      <p class="section-lede">Nine small packages, one focused job each.</p>
-      <div class="grid repo-grid">
-        <a class="repo-card primary" href="https://github.com/agent-dispatch/mcp-server">
-          <h3>mcp-server <span class="pill">entry point</span></h3>
-          <p>The MCP face for the runtime. Hand it to Claude Code, OpenClaw, or Hermes.</p>
-        </a>
-        <a class="repo-card" href="https://github.com/agent-dispatch/core">
-          <h3>core</h3>
-          <p>Runtime contracts and the dispatch loop. The heart of the stack.</p>
-        </a>
-        <a class="repo-card" href="https://github.com/agent-dispatch/sdk-js">
-          <h3>sdk-js</h3>
-          <p>Typed TypeScript SDK for application code.</p>
-        </a>
-        <a class="repo-card" href="https://github.com/agent-dispatch/cli">
-          <h3>cli</h3>
-          <p>Spawn, inspect, and cancel agents from your terminal.</p>
-        </a>
-        <a class="repo-card" href="https://github.com/agent-dispatch/store-sqlite">
-          <h3>store-sqlite</h3>
-          <p>Default SQLite + filesystem state store. Zero infrastructure.</p>
-        </a>
-        <a class="repo-card" href="https://github.com/agent-dispatch/adapter-aws-agentcore">
-          <h3>adapter-aws-agentcore</h3>
-          <p>AWS Bedrock AgentCore adapter for the <code>agent-runtime</code> capability.</p>
-        </a>
-        <a class="repo-card" href="https://github.com/agent-dispatch/worker-agentcore">
-          <h3>worker-agentcore</h3>
-          <p>Standard worker contract — request/response shapes and a small helper.</p>
-        </a>
-        <a class="repo-card" href="https://github.com/agent-dispatch/adapter-template">
-          <h3>adapter-template</h3>
-          <p>Starter for new cloud adapters. Ship one in an afternoon.</p>
-        </a>
-        <a class="repo-card" href="https://github.com/agent-dispatch/docs">
-          <h3>docs</h3>
-          <p>Guides, architecture, and reference material.</p>
-        </a>
-      </div>
-    </section>
-
-    <section class="cta-section">
-      <h2>Ready to dispatch?</h2>
-      <p>Wire AgentDispatch into your assistant and watch the model run work it could never finish on its own.</p>
-      <div class="cta-row">
-        <a class="btn primary" href="https://github.com/agent-dispatch/mcp-server">Start with the MCP server</a>
-        <a class="btn ghost" href="https://github.com/agent-dispatch/docs">Read the docs →</a>
+    <!-- ─── CTA ─────────────────────────────────────────────────────── -->
+    <section class="section cta-section">
+      <div class="container narrow center">
+        <h2 class="display">Ready to dispatch?</h2>
+        <p class="lede">Wire AgentDispatch into your assistant and watch the model run work it could never finish on its own.</p>
+        <div class="cta-row">
+          <a class="btn primary" href="https://github.com/agent-dispatch/mcp-server">Start with the MCP server</a>
+          <a class="btn ghost" href="https://github.com/agent-dispatch/docs">Read the docs →</a>
+        </div>
       </div>
     </section>
   </main>
 
   <footer class="footer">
-    <p>Apache-2.0 · Built by the AgentDispatch contributors</p>
-    <p><a href="https://github.com/agent-dispatch">github.com/agent-dispatch</a></p>
+    <div class="container footer-inner">
+      <span>Apache-2.0 · Built by the AgentDispatch contributors</span>
+      <a href="https://github.com/agent-dispatch">github.com/agent-dispatch ↗</a>
+    </div>
   </footer>
 
   <script src="./script.js" defer></script>
