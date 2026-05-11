@@ -3,7 +3,7 @@
 <h3 align="center">Spawn cloud agents from your AI.</h3>
 
 <p align="center">
-  Claude Code, Codex, OpenClaw, and Hermes are great at planning. They choke when a job runs for hours.<br/>
+  Claude Code, Codex, OpenClaw, and Hermes are strong local orchestrators. Long-running jobs need a separate execution plane.<br/>
   <code>@agent-dispatch/mcp-server</code> hands them a managed cloud runtime — one MCP call, durable status, results when they land.
 </p>
 
@@ -27,20 +27,20 @@
 
 ## Why this exists
 
-Local AI assistants plan brilliantly. They get cramped the moment work gets long:
+Local AI assistants are effective planners. They hit operational limits when work becomes long-running:
 
 - A **deep-research** sweep across fifty pages of docs.
 - An **account-wide audit** that has to touch every service.
 - A **multi-hour** job that has no business sitting in your IDE's context window.
 
-Doing it inline burns context, blocks the chat, and dies the second you close the laptop. That's not what local agents are for.
+Running this inline consumes context, blocks the lead-agent session, and loses continuity when the local process stops.
 
 **AgentDispatch is the missing tool.** One MCP server gives your assistant a single primitive: *spawn a cloud agent with this instruction, come back later for the result.* The work runs on managed cloud compute. Status, logs, and the final output flow back through the same MCP channel.
 
-- ☁️ **Real cloud, not your laptop.** AWS Bedrock AgentCore today; new clouds plug in through one small adapter contract.
-- ⏱️ **Built for marathons.** Sessions for stateful runs. Runtime mode for provisioned per-task resources. Same MCP contract.
+- ☁️ **Cloud execution plane.** AWS Bedrock AgentCore today; new clouds plug in through one small adapter contract.
+- ⏱️ **Built for long-running work.** Sessions for stateful runs. Runtime mode for provisioned per-task resources. Same MCP contract.
 - 🔭 **Full visibility.** Status, paginated logs, results, cancellation — over MCP, the SDK, or the CLI.
-- 🪶 **Boring defaults.** SQLite state. stdio transport. Zero hidden services. Runs on a laptop, in CI, or on a server.
+- 🪶 **Simple defaults.** SQLite state. stdio transport. Zero hidden services. Runs locally, in CI, or on a server.
 
 ## What it does
 
@@ -105,10 +105,18 @@ Immediate response:
   "cloud_agent": {
     "protocol": "a2a",
     "provider": "aws",
-    "runtime_session_id": "agentdispatch-...",
-    "protocol_hints": {
-      "transport": "aws-agentcore-runtime",
-      "message_method": "message/send"
+    "backend": "aws-agentcore",
+    "sessionId": "ad-f7221e93f25499a0a1fc0160f63c7621",
+    "invocation": {
+      "type": "aws.agentcore.invoke_agent_runtime",
+      "runtimeUrl": "https://bedrock-agentcore.us-west-2.amazonaws.com/runtimes/.../invocations/",
+      "sessionHeaderName": "X-Amzn-Bedrock-AgentCore-Runtime-Session-Id",
+      "payloadFormat": "a2a.jsonrpc.message-send"
+    },
+    "a2a": {
+      "transport": "json-rpc-2.0-http",
+      "messageMethod": "message/send",
+      "agentCardPath": "/.well-known/agent-card.json"
     }
   }
 }
@@ -119,11 +127,12 @@ If the agent does not provide enough information, the server returns a structure
 ```json
 {
   "status": "needs_clarification",
-  "missing": ["instruction", "runtimeArn"],
+  "retry_tool": "spawn_cloud_agent",
   "questions": [
     { "id": "instruction", "question": "What task should the cloud subagent run?" },
     { "id": "runtimeArn", "question": "Which AWS AgentCore runtime ARN should this cloud subagent use?" }
-  ]
+  ],
+  "available_runtimes": []
 }
 ```
 
@@ -276,6 +285,7 @@ npx agentdispatch-mcp --config agentdispatch.config.json --check
 | [`worker-agentcore`](https://github.com/agent-dispatch/worker-agentcore) | Standard AgentCore worker contract |
 | [`adapter-template`](https://github.com/agent-dispatch/adapter-template) | Starter for new cloud adapters |
 | [`docs`](https://github.com/agent-dispatch/docs) | Documentation |
+| [`website`](https://github.com/agent-dispatch/website) | Static project website |
 
 ## Development
 
