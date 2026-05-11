@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AgentDispatch — spawn cloud agents from your AI</title>
-  <meta name="description" content="Claude Code, OpenClaw, and Hermes plan brilliantly — and choke on multi-hour work. AgentDispatch hands them a managed cloud runtime. One MCP call. Results when they land." />
+  <meta name="description" content="Claude Code, OpenClaw, and Hermes are remarkable tools — until you point them at resource-intensive work. AgentDispatch hands the heavy execution to a managed cloud runtime, over one MCP call." />
   <meta name="theme-color" content="#FAFAFA" />
   <meta property="og:title" content="AgentDispatch — spawn cloud agents from your AI" />
   <meta property="og:description" content="Plan locally. Run in the cloud. Spawn long-running agents from any MCP client." />
@@ -27,7 +27,7 @@
           <circle cx="136" cy="100" r="24"/>
           <rect x="58" y="96" width="92" height="36" rx="18"/>
         </g>
-        <path d="M 108 86 L 138 110 L 108 134" stroke="currentColor" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <path d="M 102 78 L 107 99 L 128 104 L 107 109 L 102 130 L 97 109 L 76 104 L 97 99 Z" fill="currentColor"/>
       </svg>
       <span class="brand-text">AgentDispatch</span>
     </a>
@@ -164,10 +164,10 @@
           </div>
 
           <div class="captions">
-            <p class="caption" data-step="0">Local AI assistants plan brilliantly. They choke on multi-hour work.</p>
-            <p class="caption" data-step="1">One MCP tool — <code>spawn_cloud_agent</code> — sends the heavy lift away.</p>
+            <p class="caption" data-step="0">Local AI is great until the work gets resource-intensive — then it stalls.</p>
+            <p class="caption" data-step="1">One MCP tool — <code>spawn_cloud_agent</code> — sends the heavy execution away.</p>
             <p class="caption" data-step="2">AgentDispatch routes it to managed cloud compute.</p>
-            <p class="caption" data-step="3">Real agents run for as long as the work takes. Your chat stays light.</p>
+            <p class="caption" data-step="3">Hours of work, thousands of API calls, parallel fleets — run on real infrastructure.</p>
             <p class="caption" data-step="4">Status, logs, and the final result return over the same MCP channel.</p>
           </div>
 
@@ -182,7 +182,8 @@
     <section class="section problem" id="problem">
       <div class="container narrow">
         <p class="kicker">The problem</p>
-        <h2 class="display">Your AI assistant is great at planning.<br/><span class="muted">It runs out of room the moment work gets long.</span></h2>
+        <h2 class="display">Your AI is great at what it does.<br/><span class="muted">It hits a wall on resource-intensive execution.</span></h2>
+        <p class="lede">The local agent already knows what to do. The work is just too heavy to host inline — hours of compute, thousands of API calls, parallelism across a fleet, or credentials the laptop can't safely hold. <strong>That gap is what AgentDispatch fills.</strong></p>
       </div>
 
       <div class="container">
@@ -190,21 +191,21 @@
           <article class="problem-card">
             <div class="problem-badge">In the chat today</div>
             <ul>
-              <li>Multi-hour audits run inline and burn the context window.</li>
-              <li>A deep-research sweep blocks every other tool call.</li>
-              <li>Close the laptop and the run dies.</li>
-              <li>Parallel work is sequential by default.</li>
-              <li>Tools cap at what the local process can reach.</li>
+              <li>An account-wide IAM audit times out the chat session.</li>
+              <li>Reproducing a flaky test across 200 environments isn't tractable inline.</li>
+              <li>Embedding a 500k-LOC monorepo burns the context window before the answer arrives.</li>
+              <li>A framework migration across hundreds of files is sequential by default.</li>
+              <li>Close the laptop and the run dies. Parallel work? Sequential.</li>
             </ul>
           </article>
           <article class="problem-card outcome">
             <div class="problem-badge accent">With AgentDispatch</div>
             <ul>
-              <li>Long work moves to a managed cloud worker.</li>
-              <li>One MCP call returns a <code>task_id</code> — chat keeps moving.</li>
-              <li>Runs survive disconnects. Pick up the result later.</li>
-              <li>Fan out a fleet in parallel; aggregate in chat.</li>
-              <li>Cloud-side tools, credentials, and compute the laptop never sees.</li>
+              <li>Heavy execution moves to a managed cloud worker.</li>
+              <li>One MCP call returns a <code>task_id</code> — the chat keeps moving.</li>
+              <li>Runs survive disconnects; the result is there when you come back.</li>
+              <li>Fan out dozens of cloud agents in parallel; aggregate in chat.</li>
+              <li>Cloud-side tools, credentials, and compute the laptop never has to see.</li>
             </ul>
           </article>
         </div>

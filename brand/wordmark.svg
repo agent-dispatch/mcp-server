@@ -10,12 +10,8 @@
       <rect x="46" y="77" width="74" height="29" rx="14"/>
     </g>
     <path
-      d="M 86 69 L 110 88 L 86 107"
-      stroke="#0A0A0A"
-      stroke-width="10.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      fill="none"
+      d="M 82 62 L 86 79 L 103 83 L 86 87 L 82 104 L 78 87 L 61 83 L 78 79 Z"
+      fill="#0A0A0A"
     />
   </g>
 

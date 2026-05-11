@@ -5,11 +5,11 @@
   </picture>
 </p>
 
-<h3 align="center">Spawn cloud agents from your AI.</h3>
+<h3 align="center">Cloud agents for the work your local AI can't run alone.</h3>
 
 <p align="center">
-  Claude Code, OpenClaw, and Hermes are great at planning. They choke when a job runs for hours.<br/>
-  <code>@agent-dispatch/mcp-server</code> hands them a managed cloud runtime — one MCP call, results when they land.
+  Claude Code, OpenClaw, and Hermes are remarkable tools — until you point them at a job that's resource-intensive.<br/>
+  <code>@agent-dispatch/mcp-server</code> hands the heavy execution to a managed cloud runtime, over one MCP call.
 </p>
 
 <p align="center">
@@ -32,18 +32,20 @@
 
 ## Why this exists
 
-Local AI assistants plan brilliantly. They get cramped the moment work gets long:
+Claude Code, OpenClaw, and Hermes are great tools. They reason carefully, write good code, and stay accurate over surprisingly long sessions. But there's a wall every developer hits:
 
-- A **deep-research** sweep across fifty pages of docs.
-- An **account-wide audit** that has to touch every service.
-- A **multi-hour** job that has no business sitting in your IDE's context window.
+> *"Investigate this across the whole org."*
+> *"Audit every IAM policy in this account."*
+> *"Reproduce this flaky test fifty times under different conditions."*
+> *"Migrate this codebase to the new framework version."*
 
-Doing it inline burns context, blocks the chat, and dies the second you close the laptop. That's not what local agents are for.
+These are not planning problems. The local agent already knows what to do. The work is just **resource-intensive** — it needs hours of compute, thousands of network requests, parallelism across a fleet, or credentials and tooling the laptop process can't safely hold. The local agent stalls. The chat session blocks. Close the laptop and the run dies.
 
-**AgentDispatch is the missing tool.** One MCP server gives your assistant a single primitive: *spawn a cloud agent with this instruction, come back later for the result.* The work runs on managed cloud compute. Status, logs, and the final output stream back through the same MCP channel.
+**AgentDispatch is the missing tool.** One MCP server gives your assistant a single primitive: *spawn a cloud agent with this instruction, come back later for the result.* The execution moves to managed cloud compute. Status, logs, and the final output stream back through the same MCP channel.
 
-- ☁️ **Real cloud, not your laptop.** AWS Bedrock AgentCore today; new clouds plug in through one small adapter contract.
-- ⏱️ **Built for marathons.** Sessions for stateful runs. Jobs for hours-long work. Sync for fast turn-around. Same API, three modes.
+- ☁️ **Real cloud compute, not your laptop.** AWS Bedrock AgentCore today; new clouds plug in through one small adapter contract.
+- ⚙️ **Built for resource-intensive runs.** Sessions for stateful execution. Jobs for hours-long work. Sync for fast turn-around. Same API, three modes.
+- 🛰️ **Fan out a fleet.** One assistant can dispatch dozens of cloud agents in parallel and aggregate the results in chat.
 - 🔭 **Full visibility.** Status, paginated logs, results, cancellation — over MCP, the SDK, or the CLI.
 - 🪶 **Boring defaults.** SQLite state. stdio transport. Zero hidden services. Runs on a laptop, in CI, on a server.
 
@@ -202,10 +204,12 @@ npx agentdispatch-mcp --config agentdispatch.config.json --check
 
 ## Real-world use cases
 
-- **Deep research from chat.** Claude Code spawns a cloud agent: "Read the last 90 days of CloudTrail anomalies and propose detection rules." The session keeps going. Twenty minutes later it pulls the result.
-- **Parallel codebase audits.** Claude Code fans out a dozen `spawn_cloud_agent` calls, one per service, and aggregates the reports.
-- **Long-running OpenClaw runs.** OpenClaw plans the work locally, dispatches the multi-hour execution to a managed AgentCore worker.
-- **Tool-rich Hermes jobs.** Hermes uses cloud-side tools (web, code interpreter, repo access) that aren't available to the local process.
+- **Account-wide security audits.** "Walk every IAM role, Lambda, and S3 bucket in this account, check each against our policy spec, return the findings." Thousands of API calls. Forty minutes of wall-clock time. Returns as one tool response.
+- **Cross-repo investigations.** "Survey every pull request opened in the org over the last quarter and identify recurring review patterns." Reads hundreds of PRs, persists intermediate state, summarises.
+- **Flaky-test reproduction.** "Reproduce this test across 200 combinations of Node version, OS, and time-of-day." The cloud agent provisions, runs, and collects — the local chat never has to hold the matrix.
+- **Framework migrations.** "Move this 500-file codebase from Vue 2 to Vue 3, run the test suite, fix what broke." Touches every file, runs the tests, iterates.
+- **Codebase indexing for ad-hoc Q&A.** "Embed this 500k-LOC monorepo and answer questions about it for the rest of the day." Embedding is heavy; querying is cheap. Spawn once, query many times.
+- **Continuous CI investigation.** Claude Code spots a failing build, dispatches a cloud agent to pull artifacts, parse logs, correlate with recent commits, and propose a fix — while the developer keeps coding.
 
 ## The rest of AgentDispatch
 

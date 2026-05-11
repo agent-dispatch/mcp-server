@@ -5,11 +5,11 @@
   </picture>
 </p>
 
-<h3 align="center">Spawn cloud agents from your AI.</h3>
+<h3 align="center">Cloud agents for the work your local AI can't run alone.</h3>
 
 <p align="center">
-  Claude Code, OpenClaw, and Hermes plan brilliantly — and choke on multi-hour work.<br/>
-  AgentDispatch hands them a managed cloud runtime: one MCP call, results when they land.
+  Claude Code, OpenClaw, and Hermes are remarkable tools — until you point them at a job that's resource-intensive.<br/>
+  AgentDispatch hands the heavy execution to a managed cloud runtime: one MCP call, results when they land.
 </p>
 
 <p align="center">
@@ -24,20 +24,22 @@
 
 ## The problem
 
-Local AI assistants — Claude Code, OpenClaw, Hermes — plan brilliantly. They get cramped the moment work gets long. A deep-research sweep, an account-wide audit, a multi-hour reasoning job: none of it belongs in a laptop's context window.
+Local AI assistants are excellent at what they're for. The wall isn't reasoning — it's execution. The moment the work needs hours of compute, thousands of API calls, parallelism across a fleet, or cloud-only credentials, the local agent stalls. The chat blocks. Close the laptop and the run dies.
+
+Concretely: an account-wide IAM audit, reproducing a flaky test across 200 environments, embedding a 500k-LOC monorepo, migrating a framework version, surveying every PR in the org. The local agent knows what to do — it just can't host the doing.
 
 ## The fix
 
-AgentDispatch is the one tool your local agent is missing: **spawn a cloud agent with this instruction, come back later for the result.** The run happens on managed cloud compute. Status, logs, and final output stream back over MCP.
+AgentDispatch is the one tool your local agent is missing: **spawn a cloud agent with this instruction, come back later for the result.** The execution happens on managed cloud compute. Status, logs, and final output stream back over MCP.
 
 ```
 spawn_cloud_agent({ instruction: "Audit every Lambda for public invoke." })
 // → task_id, then status / logs / result on demand
 ```
 
-- ☁️ **Real cloud, not your laptop.** AWS Bedrock AgentCore today; bring your own cloud tomorrow.
-- ⏱️ **Built for marathons.** Sync, session, or job mode — same API.
-- 🔭 **Full visibility.** Status, logs, results, cancellation.
+- ☁️ **Real cloud compute, not your laptop.** AWS Bedrock AgentCore today; bring your own cloud tomorrow.
+- ⚙️ **Built for resource-intensive runs.** Sync, session, or job mode — same API.
+- 🛰️ **Fan out a fleet.** Dispatch dozens of cloud agents in parallel and aggregate in chat.
 - 🪶 **Boring defaults.** SQLite, stdio, no hidden services.
 
 ## Made for the agents you already use
