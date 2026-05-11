@@ -76,25 +76,20 @@ get_task_result({ task_id: "task_..." })
 
 All tool inputs are validated with [Zod](https://zod.dev). See [`src/schemas.ts`](src/schemas.ts) for the exact shapes.
 
-## Supported clients and frameworks
+## Supported clients
 
-**Clients** — anything that speaks MCP:
+Anything that speaks MCP. The common ones today:
 
-- 🤖 **Claude Code** — wire it into `~/.claude/mcp_settings.json` (or your project's `.mcp.json`).
-- 🦅 **OpenClaw** — add it to your MCP server list and use `spawn_cloud_agent` from inside any task.
+- 🤖 **Claude Code** — add it to `~/.claude/mcp_settings.json` (or your project's `.mcp.json`).
+- 🦅 **OpenClaw** — add it to your MCP server list and call `spawn_cloud_agent` from inside any task.
 - 🪽 **Hermes** — same wire-up; long-running reasoning and tool-rich runs move to the cloud.
-- Claude Desktop, Cursor, Continue, Goose, Zed — same JSON, different file.
+- Claude Desktop, Cursor, Continue, Goose, Zed — same JSON, different config file.
 
-**Frameworks the cloud agent can run** — set the `framework` field on a runtime profile:
+## What the cloud agent runs
 
-| Framework | Use |
-| --- | --- |
-| `strands` | Agentic loop with tool use, built for AgentCore. |
-| `openclaw` | Cloud OpenClaw worker — your local OpenClaw delegates the heavy run. |
-| `hermes` | Cloud Hermes worker for long-context reasoning. |
-| _your-framework_ | `framework` is a string; whatever your worker understands. |
+`spawn_cloud_agent` and `dispatch_task` both accept an optional `framework` string, and runtime profiles carry a default. The value travels through to the worker — **AgentDispatch doesn't interpret it; the worker does.** That means you can wire any agent framework that your worker knows how to instantiate.
 
-Frameworks aren't hard-coded into AgentDispatch — the value travels through to the worker, which decides what to run. The packages above ship reference workers in [`worker-agentcore`](https://github.com/agent-dispatch/worker-agentcore).
+Today the reference worker in [`worker-agentcore`](https://github.com/agent-dispatch/worker-agentcore) ships with **Strands** support. Other frameworks (your own agent loop, an OpenClaw-style runner, a Hermes-style long-context worker) become available the moment your worker handles their `framework` value. There's no allow-list in AgentDispatch itself.
 
 ## Quick start
 
@@ -151,12 +146,12 @@ The defaults come from your runtime profile — provider, account, backend, targ
 2. **MCP server** validates input, hydrates defaults from a runtime profile, calls the core runtime.
 3. **Core** picks the right capability + adapter, persists the task, dispatches.
 4. **Adapter** invokes the worker in your cloud — synchronous, session, or job target mode.
-5. **Worker** runs the actual framework (Strands / OpenClaw / Hermes / your own) on managed cloud infrastructure.
+5. **Worker** runs an agent framework on managed cloud infrastructure. The reference worker in [`worker-agentcore`](https://github.com/agent-dispatch/worker-agentcore) ships with Strands; add support for any other framework by handling its `framework` string.
 6. Status, logs, and results flow back through the same path.
 
 ## Configuration
 
-Minimal AWS Bedrock AgentCore (session mode) for an OpenClaw-style research agent:
+Minimal AWS Bedrock AgentCore (session mode):
 
 ```json
 {
@@ -187,7 +182,7 @@ Minimal AWS Bedrock AgentCore (session mode) for an OpenClaw-style research agen
       "capability": "agent-runtime",
       "backend": "aws-agentcore",
       "target": { "mode": "session" },
-      "framework": "openclaw",
+      "framework": "strands",
       "runtimeTools": { "enabled": ["web-search", "code-interpreter"] }
     }
   },
@@ -197,7 +192,7 @@ Minimal AWS Bedrock AgentCore (session mode) for an OpenClaw-style research agen
 }
 ```
 
-Once `defaults.runtime` is set, `spawn_cloud_agent` only needs an `instruction`. Switch the `framework` field to run Strands, Hermes, or your own worker contract.
+Once `defaults.runtime` is set, `spawn_cloud_agent` only needs an `instruction`. The `framework` value is passed straight through to the worker — change it to any string your worker recognises.
 
 Validate the wiring before connecting an MCP client:
 

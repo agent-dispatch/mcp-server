@@ -73,7 +73,7 @@ All three call into the same dispatcher and share the same runtime profiles.
             └─────────┬─────────┘
                       ▼
             ┌───────────────────┐
-            │   cloud worker    │   runs Strands · OpenClaw · Hermes · your framework
+            │   cloud worker    │   runs Strands today · your framework next
             └───────────────────┘
 ```
 
@@ -89,7 +89,7 @@ The adapter contract is small and stable, so a new cloud (or a new framework) is
 | [`cli`](https://github.com/agent-dispatch/cli) | Command-line interface for operators. |
 | [`store-sqlite`](https://github.com/agent-dispatch/store-sqlite) | Default SQLite + filesystem state store. |
 | [`adapter-aws-agentcore`](https://github.com/agent-dispatch/adapter-aws-agentcore) | AWS Bedrock AgentCore adapter. |
-| [`worker-agentcore`](https://github.com/agent-dispatch/worker-agentcore) | Standard AgentCore worker contract (reference Strands / OpenClaw / Hermes workers live here). |
+| [`worker-agentcore`](https://github.com/agent-dispatch/worker-agentcore) | Standard AgentCore worker contract. Reference Strands worker lives here; add your own framework by handling its `framework` string. |
 | [`adapter-template`](https://github.com/agent-dispatch/adapter-template) | Starter for new cloud adapters. |
 | [`docs`](https://github.com/agent-dispatch/docs) | Documentation and guides. |
 
