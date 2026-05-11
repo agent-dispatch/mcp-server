@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { dispatchTaskInputSchema, mcpToolSchemas, spawnCloudAgentInputSchema } from "../src/index.js";
+import { dispatchTaskInputSchema, getTaskLogsInputSchema, mcpToolSchemas, spawnCloudAgentInputSchema } from "../src/index.js";
 
 describe("MCP schemas", () => {
   it("keeps dispatch_task provider-neutral", () => {
@@ -48,5 +48,17 @@ describe("MCP schemas", () => {
       context: { repo: "agent-dispatch" },
       runtime_tools: { enabled: ["web-search"] }
     });
+  });
+
+  it("constrains get_task_logs cursor and limit", () => {
+    expect(getTaskLogsInputSchema.parse({ task_id: "task_1", cursor: 0, limit: 64_000 })).toMatchObject({
+      task_id: "task_1",
+      cursor: 0,
+      limit: 64_000
+    });
+    expect(() => getTaskLogsInputSchema.parse({ task_id: "task_1", cursor: -1 })).toThrow();
+    expect(() => getTaskLogsInputSchema.parse({ task_id: "task_1", cursor: 1.5 })).toThrow();
+    expect(() => getTaskLogsInputSchema.parse({ task_id: "task_1", limit: 0 })).toThrow();
+    expect(() => getTaskLogsInputSchema.parse({ task_id: "task_1", limit: 64_001 })).toThrow();
   });
 });
