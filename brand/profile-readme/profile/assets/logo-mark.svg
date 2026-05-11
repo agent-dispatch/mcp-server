@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="AgentDispatch mark">
+  <title>AgentDispatch</title>
+  <defs>
+    <linearGradient id="ad-grad" x1="0" y1="0" x2="200" y2="200" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7C3AED"/>
+      <stop offset="1" stop-color="#06B6D4"/>
+    </linearGradient>
+    <radialGradient id="ad-glow" cx="100" cy="100" r="40" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#A78BFA" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#A78BFA" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="200" height="200" rx="44" fill="#0B1020"/>
+
+  <circle cx="100" cy="100" r="40" fill="url(#ad-glow)"/>
+
+  <g stroke="url(#ad-grad)" stroke-width="10" stroke-linecap="round" fill="none">
+    <line x1="100" y1="100" x2="30" y2="100"/>
+    <line x1="100" y1="100" x2="160.6" y2="65"/>
+    <line x1="100" y1="100" x2="160.6" y2="135"/>
+  </g>
+
+  <circle cx="30" cy="100" r="12" fill="#7C3AED"/>
+  <circle cx="160.6" cy="65" r="12" fill="#06B6D4"/>
+  <circle cx="160.6" cy="135" r="12" fill="#06B6D4"/>
+
+  <circle cx="100" cy="100" r="22" fill="url(#ad-grad)"/>
+  <circle cx="100" cy="100" r="6" fill="#FFFFFF"/>
+</svg>

@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="AgentDispatch — provider-neutral runtime for AI agents">
+  <title>AgentDispatch — provider-neutral runtime for AI agents</title>
+  <defs>
+    <linearGradient id="og-bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0B1020"/>
+      <stop offset="1" stop-color="#0F172A"/>
+    </linearGradient>
+    <radialGradient id="og-glow-1" cx="200" cy="500" r="600" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7C3AED" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#7C3AED" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="og-glow-2" cx="1050" cy="120" r="500" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#06B6D4" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#06B6D4" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="og-grad" x1="0" y1="0" x2="200" y2="200" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#A78BFA"/>
+      <stop offset="1" stop-color="#22D3EE"/>
+    </linearGradient>
+    <linearGradient id="og-text" x1="0" y1="0" x2="800" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#A78BFA"/>
+      <stop offset="1" stop-color="#22D3EE"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#og-bg)"/>
+  <rect width="1200" height="630" fill="url(#og-glow-1)"/>
+  <rect width="1200" height="630" fill="url(#og-glow-2)"/>
+
+  <g transform="translate(80,80)">
+    <rect width="120" height="120" rx="28" fill="#0B1020" stroke="#1F2A44"/>
+    <g transform="scale(0.6)" stroke="url(#og-grad)" stroke-width="14" stroke-linecap="round" fill="none">
+      <line x1="100" y1="100" x2="30" y2="100"/>
+      <line x1="100" y1="100" x2="160.6" y2="65"/>
+      <line x1="100" y1="100" x2="160.6" y2="135"/>
+    </g>
+    <g transform="scale(0.6)">
+      <circle cx="30" cy="100" r="13" fill="#A78BFA"/>
+      <circle cx="160.6" cy="65" r="13" fill="#22D3EE"/>
+      <circle cx="160.6" cy="135" r="13" fill="#22D3EE"/>
+      <circle cx="100" cy="100" r="22" fill="url(#og-grad)"/>
+      <circle cx="100" cy="100" r="6" fill="#fff"/>
+    </g>
+  </g>
+
+  <g font-family="Inter, ui-sans-serif, system-ui, sans-serif">
+    <text x="220" y="158" font-size="48" font-weight="800" fill="#F8FAFC" letter-spacing="-0.02em">AgentDispatch</text>
+
+    <text x="80" y="320" font-size="78" font-weight="800" fill="#F8FAFC" letter-spacing="-0.03em">Give your AI assistant</text>
+    <text x="80" y="408" font-size="78" font-weight="800" letter-spacing="-0.03em" fill="url(#og-text)">a fleet of cloud agents.</text>
+
+    <text x="80" y="488" font-size="28" font-weight="500" fill="#94A3B8">One contract. Any agent. Any cloud.</text>
+
+    <text x="80" y="568" font-size="22" font-weight="600" fill="#64748B" letter-spacing="0.04em">GITHUB.COM/AGENT-DISPATCH</text>
+  </g>
+</svg>

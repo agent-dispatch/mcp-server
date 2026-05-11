@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AgentDispatch — provider-neutral runtime for AI agents</title>
+  <meta name="description" content="Spawn long-running cloud agents from your CLI, your code, or any MCP client. One contract. Any agent. Any cloud." />
+  <meta name="theme-color" content="#0B1020" />
+  <meta property="og:title" content="AgentDispatch" />
+  <meta property="og:description" content="Give your AI assistant a fleet of cloud agents." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="./assets/og.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg" />
+  <link rel="preconnect" href="https://rsms.me" />
+  <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="nav" aria-label="Primary">
+    <a class="brand" href="#top" aria-label="AgentDispatch home">
+      <svg class="brand-mark" viewBox="0 0 200 200" aria-hidden="true">
+        <defs>
+          <linearGradient id="nv-grad" x1="0" y1="0" x2="200" y2="200" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#A78BFA"/>
+            <stop offset="1" stop-color="#22D3EE"/>
+          </linearGradient>
+        </defs>
+        <rect width="200" height="200" rx="44" fill="#0B1020"/>
+        <g stroke="url(#nv-grad)" stroke-width="14" stroke-linecap="round" fill="none">
+          <line x1="100" y1="100" x2="30" y2="100"/>
+          <line x1="100" y1="100" x2="160.6" y2="65"/>
+          <line x1="100" y1="100" x2="160.6" y2="135"/>
+        </g>
+        <circle cx="30" cy="100" r="16" fill="#A78BFA"/>
+        <circle cx="160.6" cy="65" r="16" fill="#22D3EE"/>
+        <circle cx="160.6" cy="135" r="16" fill="#22D3EE"/>
+        <circle cx="100" cy="100" r="26" fill="url(#nv-grad)"/>
+        <circle cx="100" cy="100" r="8" fill="#fff"/>
+      </svg>
+      <span class="brand-text">AgentDispatch</span>
+    </a>
+    <nav class="nav-links">
+      <a href="#why">Why</a>
+      <a href="#install">Install</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#repos">Packages</a>
+      <a class="cta" href="https://github.com/agent-dispatch">GitHub →</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="orbit" aria-hidden="true"></div>
+      <div class="hero-inner">
+        <p class="eyebrow">Provider-neutral runtime for AI agents</p>
+        <h1>
+          Give your AI assistant<br/>
+          a fleet of <span class="grad">cloud agents</span>.
+        </h1>
+        <p class="lede">
+          One contract. Any agent. Any cloud. Spawn long-running, stateful cloud agents
+          from your CLI, your code, or any MCP client — without picking a provider for life.
+        </p>
+        <div class="cta-row">
+          <a class="btn primary" href="#install">Get started</a>
+          <a class="btn ghost" href="https://github.com/agent-dispatch/mcp-server">View MCP server →</a>
+        </div>
+        <div class="badge-row">
+          <span class="badge">Apache-2.0</span>
+          <span class="badge">TypeScript</span>
+          <span class="badge">MCP 1.x</span>
+          <span class="badge">AWS Bedrock AgentCore</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="why" class="features">
+      <h2 class="section-title">Why AgentDispatch</h2>
+      <p class="section-lede">
+        Every agent runtime today ships its own API and worker contract. Pick one and you're locked in.
+        AgentDispatch is the dispatch layer between your application and the runtime of your choice.
+      </p>
+      <div class="grid features-grid">
+        <article class="card">
+          <div class="card-icon">🧩</div>
+          <h3>Provider-neutral</h3>
+          <p>A small, stable capability + adapter contract. Write once, swap providers without rewriting orchestration code.</p>
+        </article>
+        <article class="card">
+          <div class="card-icon">⚡</div>
+          <h3>Spawn in one line</h3>
+          <p><code>spawn_cloud_agent({ instruction })</code> resolves provider, account, capability, framework, and tools from a runtime profile.</p>
+        </article>
+        <article class="card">
+          <div class="card-icon">🔭</div>
+          <h3>Full lifecycle</h3>
+          <p>Status, paginated logs, results, cancellation — over MCP, the SDK, and the CLI. Same surface, three faces.</p>
+        </article>
+        <article class="card">
+          <div class="card-icon">🪶</div>
+          <h3>Lightweight defaults</h3>
+          <p>SQLite for state, stdio for transport, zero hidden services. Runs on your laptop, in CI, and on a server.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="install" class="install">
+      <h2 class="section-title">Three faces, one runtime</h2>
+      <p class="section-lede">Pick the entry point that fits — they all talk to the same dispatcher.</p>
+
+      <div class="tabs" role="tablist">
+        <button class="tab active" role="tab" data-tab="mcp">MCP (Claude, Cursor)</button>
+        <button class="tab" role="tab" data-tab="sdk">SDK (TypeScript)</button>
+        <button class="tab" role="tab" data-tab="cli">CLI</button>
+      </div>
+
+      <div class="tab-panel active" data-panel="mcp">
+        <pre><code><span class="c-c">$</span> npm install @agent-dispatch/core @agent-dispatch/mcp-server \
+    @agent-dispatch/store-sqlite @agent-dispatch/adapter-aws-agentcore
+
+<span class="c-c">$</span> npx agentdispatch-mcp --config agentdispatch.config.json --check</code></pre>
+        <pre><code><span class="c-c">// Claude Desktop / Cursor / Claude Code</span>
+{
+  <span class="c-k">"mcpServers"</span>: {
+    <span class="c-k">"agentdispatch"</span>: {
+      <span class="c-k">"command"</span>: <span class="c-s">"npx"</span>,
+      <span class="c-k">"args"</span>: [<span class="c-s">"agentdispatch-mcp"</span>, <span class="c-s">"--config"</span>, <span class="c-s">"/abs/path/agentdispatch.config.json"</span>]
+    }
+  }
+}</code></pre>
+      </div>
+
+      <div class="tab-panel" data-panel="sdk">
+        <pre><code><span class="c-c">$</span> npm install @agent-dispatch/sdk @agent-dispatch/core</code></pre>
+        <pre><code><span class="c-k">import</span> { createClient } <span class="c-k">from</span> <span class="c-s">"@agent-dispatch/sdk"</span>;
+
+<span class="c-k">const</span> client = createClient({ configPath: <span class="c-s">"agentdispatch.config.json"</span> });
+
+<span class="c-k">const</span> { taskId } = <span class="c-k">await</span> client.spawnCloudAgent({
+  instruction: <span class="c-s">"Audit our S3 buckets for public read."</span>,
+  runtime: <span class="c-s">"security-agent"</span>
+});
+
+<span class="c-k">for await</span> (<span class="c-k">const</span> event <span class="c-k">of</span> client.streamTask(taskId)) console.log(event);</code></pre>
+      </div>
+
+      <div class="tab-panel" data-panel="cli">
+        <pre><code><span class="c-c">$</span> npm install -g @agent-dispatch/cli
+
+<span class="c-c">$</span> agentdispatch check --config agentdispatch.config.json
+<span class="c-c">$</span> agentdispatch spawn <span class="c-s">"Summarise the latest release notes."</span>
+<span class="c-c">$</span> agentdispatch logs &lt;task-id&gt; --follow
+<span class="c-c">$</span> agentdispatch result &lt;task-id&gt;</code></pre>
+      </div>
+    </section>
+
+    <section id="architecture" class="arch">
+      <h2 class="section-title">How it fits together</h2>
+      <p class="section-lede">
+        Callers issue tool calls. Core resolves a capability + adapter and persists the task.
+        The adapter invokes a worker on the target cloud. Status and logs flow back the same way.
+      </p>
+      <div class="arch-diagram">
+        <svg viewBox="0 0 1000 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="AgentDispatch architecture">
+          <defs>
+            <linearGradient id="a-grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#7C3AED"/>
+              <stop offset="1" stop-color="#06B6D4"/>
+            </linearGradient>
+            <marker id="a-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M0,0 L10,5 L0,10 z" fill="#94A3B8"/>
+            </marker>
+          </defs>
+
+          <g font-family="Inter, sans-serif" font-size="16" fill="#E2E8F0" text-anchor="middle">
+            <g>
+              <rect x="80"  y="40" width="200" height="60" rx="12" fill="#11172A" stroke="#1F2A44"/>
+              <text x="180" y="76">CLI</text>
+              <rect x="400" y="40" width="200" height="60" rx="12" fill="#11172A" stroke="#1F2A44"/>
+              <text x="500" y="76">SDK</text>
+              <rect x="720" y="40" width="200" height="60" rx="12" fill="#11172A" stroke="#1F2A44"/>
+              <text x="820" y="76">MCP server</text>
+            </g>
+
+            <g stroke="#94A3B8" stroke-width="1.5" fill="none" marker-end="url(#a-arrow)">
+              <line x1="180" y1="100" x2="500" y2="190"/>
+              <line x1="500" y1="100" x2="500" y2="190"/>
+              <line x1="820" y1="100" x2="500" y2="190"/>
+            </g>
+
+            <rect x="340" y="200" width="320" height="80" rx="14" fill="url(#a-grad)"/>
+            <text x="500" y="236" font-weight="700" fill="#FFFFFF" font-size="20">@agent-dispatch/core</text>
+            <text x="500" y="262" fill="#FFFFFF" opacity="0.85" font-size="14">runtime contracts · dispatch loop</text>
+
+            <g stroke="#94A3B8" stroke-width="1.5" fill="none" marker-end="url(#a-arrow)">
+              <line x1="420" y1="280" x2="240" y2="360"/>
+              <line x1="500" y1="280" x2="500" y2="360"/>
+              <line x1="580" y1="280" x2="760" y2="360"/>
+            </g>
+
+            <g>
+              <rect x="120" y="360" width="240" height="60" rx="12" fill="#11172A" stroke="#1F2A44"/>
+              <text x="240" y="396">store · SQLite + files</text>
+
+              <rect x="380" y="360" width="240" height="60" rx="12" fill="#11172A" stroke="#1F2A44"/>
+              <text x="500" y="396">adapter · AWS AgentCore</text>
+
+              <rect x="640" y="360" width="240" height="60" rx="12" fill="#11172A" stroke="#1F2A44"/>
+              <text x="760" y="396">worker · in the cloud</text>
+            </g>
+
+            <g stroke="#94A3B8" stroke-width="1.5" fill="none" marker-end="url(#a-arrow)">
+              <line x1="620" y1="390" x2="640" y2="390"/>
+            </g>
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <section id="repos" class="repos">
+      <h2 class="section-title">The stack</h2>
+      <p class="section-lede">Nine small packages, one focused job each.</p>
+      <div class="grid repo-grid">
+        <a class="repo-card primary" href="https://github.com/agent-dispatch/mcp-server">
+          <h3>mcp-server <span class="pill">entry point</span></h3>
+          <p>MCP face for the runtime. Hand it to Claude, Cursor, or Claude Code.</p>
+        </a>
+        <a class="repo-card" href="https://github.com/agent-dispatch/core">
+          <h3>core</h3>
+          <p>Runtime contracts and dispatch orchestration. The heart of the stack.</p>
+        </a>
+        <a class="repo-card" href="https://github.com/agent-dispatch/sdk-js">
+          <h3>sdk-js</h3>
+          <p>Typed TypeScript SDK for application code.</p>
+        </a>
+        <a class="repo-card" href="https://github.com/agent-dispatch/cli">
+          <h3>cli</h3>
+          <p>Spawn, inspect, and cancel agents from your terminal.</p>
+        </a>
+        <a class="repo-card" href="https://github.com/agent-dispatch/store-sqlite">
+          <h3>store-sqlite</h3>
+          <p>Default SQLite + filesystem state store. Zero infrastructure.</p>
+        </a>
+        <a class="repo-card" href="https://github.com/agent-dispatch/adapter-aws-agentcore">
+          <h3>adapter-aws-agentcore</h3>
+          <p>AWS Bedrock AgentCore adapter for the <code>agent-runtime</code> capability.</p>
+        </a>
+        <a class="repo-card" href="https://github.com/agent-dispatch/worker-agentcore">
+          <h3>worker-agentcore</h3>
+          <p>Standard worker contract — request/response shapes and a small helper.</p>
+        </a>
+        <a class="repo-card" href="https://github.com/agent-dispatch/adapter-template">
+          <h3>adapter-template</h3>
+          <p>Starter scaffolding for new cloud adapters. Ship one in an afternoon.</p>
+        </a>
+        <a class="repo-card" href="https://github.com/agent-dispatch/docs">
+          <h3>docs</h3>
+          <p>Guides, architecture, and reference material.</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <h2>Ready to dispatch?</h2>
+      <p>Wire AgentDispatch into your assistant and watch the model fan out work it could never have done alone.</p>
+      <div class="cta-row">
+        <a class="btn primary" href="https://github.com/agent-dispatch/mcp-server">Start with the MCP server</a>
+        <a class="btn ghost" href="https://github.com/agent-dispatch/docs">Read the docs →</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Apache-2.0 · Built by the AgentDispatch contributors</p>
+    <p><a href="https://github.com/agent-dispatch">github.com/agent-dispatch</a></p>
+  </footer>
+
+  <script src="./script.js" defer></script>
+</body>
+</html>
