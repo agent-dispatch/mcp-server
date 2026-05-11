@@ -1,20 +1,21 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="brand/wordmark-dark.svg">
-    <img src="brand/wordmark.svg" alt="AgentDispatch" width="560">
+    <img src="brand/wordmark.svg" alt="AgentDispatch" width="580">
   </picture>
 </p>
 
-<h3 align="center">Give your AI assistant a fleet of cloud agents.</h3>
+<h3 align="center">Spawn cloud agents from your AI.</h3>
 
 <p align="center">
-  <code>@agent-dispatch/mcp-server</code> exposes provider-neutral agent orchestration to any MCP client — so Claude, Cursor, and Claude Code can spawn and supervise long-running cloud agents with a single tool call.
+  Claude Code, OpenClaw, and Hermes are great at planning. They choke when a job runs for hours.<br/>
+  <code>@agent-dispatch/mcp-server</code> hands them a managed cloud runtime — one MCP call, results when they land.
 </p>
 
 <p align="center">
   <a href="#quick-start"><strong>Quick start</strong></a> ·
-  <a href="#tools">Tools</a> ·
-  <a href="#how-it-works">How it works</a> ·
+  <a href="#what-it-does">What it does</a> ·
+  <a href="#supported-clients-and-frameworks">Supported clients & frameworks</a> ·
   <a href="#configuration">Config</a> ·
   <a href="https://github.com/agent-dispatch">The rest of AgentDispatch</a>
 </p>
@@ -22,6 +23,7 @@
 <p align="center">
   <a href="https://www.npmjs.com/package/@agent-dispatch/mcp-server"><img alt="npm" src="https://img.shields.io/npm/v/@agent-dispatch/mcp-server?color=7C3AED&label=npm&style=flat-square"></a>
   <img alt="MCP" src="https://img.shields.io/badge/MCP-1.x-06B6D4?style=flat-square">
+  <img alt="AWS Bedrock AgentCore" src="https://img.shields.io/badge/AWS-Bedrock%20AgentCore-FF9900?style=flat-square">
   <img alt="License" src="https://img.shields.io/badge/license-Apache--2.0-0EA5E9?style=flat-square">
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square">
 </p>
@@ -30,15 +32,69 @@
 
 ## Why this exists
 
-Modern AI assistants are great at planning work. They're not great at *running* it — long-running, sandboxed, multi-step jobs need real cloud infrastructure.
+Local AI assistants plan brilliantly. They get cramped the moment work gets long:
 
-**AgentDispatch closes that loop.** This MCP server turns any compliant client into a control plane for cloud agents:
+- A **deep-research** sweep across fifty pages of docs.
+- An **account-wide audit** that has to touch every service.
+- A **multi-hour** job that has no business sitting in your IDE's context window.
 
-- 🧠 **One tool, every cloud.** Today: AWS Bedrock AgentCore. Tomorrow: anything that implements the adapter contract.
-- ⚡ **Spawn in one line.** `spawn_cloud_agent({ instruction: "..." })` and you're off — sane defaults from your runtime profile.
-- 🔭 **Full lifecycle.** Status, logs, results, cancel — all over MCP.
-- 🧩 **Provider-neutral by design.** Built on [`@agent-dispatch/core`](https://github.com/agent-dispatch/core)'s capability + adapter model.
-- 🪶 **Lightweight.** stdio transport, SQLite state, zero hidden services.
+Doing it inline burns context, blocks the chat, and dies the second you close the laptop. That's not what local agents are for.
+
+**AgentDispatch is the missing tool.** One MCP server gives your assistant a single primitive: *spawn a cloud agent with this instruction, come back later for the result.* The work runs on managed cloud compute. Status, logs, and the final output stream back through the same MCP channel.
+
+- ☁️ **Real cloud, not your laptop.** AWS Bedrock AgentCore today; new clouds plug in through one small adapter contract.
+- ⏱️ **Built for marathons.** Sessions for stateful runs. Jobs for hours-long work. Sync for fast turn-around. Same API, three modes.
+- 🔭 **Full visibility.** Status, paginated logs, results, cancellation — over MCP, the SDK, or the CLI.
+- 🪶 **Boring defaults.** SQLite state. stdio transport. Zero hidden services. Runs on a laptop, in CI, on a server.
+
+## What it does
+
+A single MCP server exposes nine tools to your assistant:
+
+| Tool | What it does |
+| --- | --- |
+| `spawn_cloud_agent` | The shortcut. One `instruction`, defaults from a runtime profile, returns a `task_id`. |
+| `dispatch_task` | The escape hatch. Full control over provider, capability, backend, target, and input. |
+| `get_task_status` | Current status for a dispatched task. |
+| `get_task_logs` | Paginated logs, cursor-based. |
+| `get_task_result` | Final result payload when the task completes. |
+| `cancel_task` | Cancel an in-flight task. |
+| `list_providers` | Providers configured in this server. |
+| `list_capabilities` | Capabilities a provider exposes (filterable). |
+| `list_account_profiles` | Account profiles configured for dispatch. |
+
+The model side looks like this:
+
+```ts
+spawn_cloud_agent({ instruction: "Audit our S3 buckets for public read and report findings." })
+// → { task_id: "task_...", status: "running" }
+
+get_task_status({ task_id: "task_..." })
+get_task_logs({ task_id: "task_...", cursor: 0 })
+get_task_result({ task_id: "task_..." })
+```
+
+All tool inputs are validated with [Zod](https://zod.dev). See [`src/schemas.ts`](src/schemas.ts) for the exact shapes.
+
+## Supported clients and frameworks
+
+**Clients** — anything that speaks MCP:
+
+- 🤖 **Claude Code** — wire it into `~/.claude/mcp_settings.json` (or your project's `.mcp.json`).
+- 🦅 **OpenClaw** — add it to your MCP server list and use `spawn_cloud_agent` from inside any task.
+- 🪽 **Hermes** — same wire-up; long-running reasoning and tool-rich runs move to the cloud.
+- Claude Desktop, Cursor, Continue, Goose, Zed — same JSON, different file.
+
+**Frameworks the cloud agent can run** — set the `framework` field on a runtime profile:
+
+| Framework | Use |
+| --- | --- |
+| `strands` | Agentic loop with tool use, built for AgentCore. |
+| `openclaw` | Cloud OpenClaw worker — your local OpenClaw delegates the heavy run. |
+| `hermes` | Cloud Hermes worker for long-context reasoning. |
+| _your-framework_ | `framework` is a string; whatever your worker understands. |
+
+Frameworks aren't hard-coded into AgentDispatch — the value travels through to the worker, which decides what to run. The packages above ship reference workers in [`worker-agentcore`](https://github.com/agent-dispatch/worker-agentcore).
 
 ## Quick start
 
@@ -55,7 +111,7 @@ npx agentdispatch-mcp --config agentdispatch.config.json --check
 Wire it into your MCP client:
 
 ```jsonc
-// Claude Desktop, Cursor, Claude Code — same shape
+// Claude Code, Claude Desktop, OpenClaw, Hermes, Cursor — same shape
 {
   "mcpServers": {
     "agentdispatch": {
@@ -66,66 +122,41 @@ Wire it into your MCP client:
 }
 ```
 
-Then, from the model side:
-
-```ts
-spawn_cloud_agent({ instruction: "Audit our S3 buckets for public read and report findings." })
-// → { task_id: "task_...", status: "running" }
-
-get_task_status({ task_id: "task_..." })
-get_task_logs({ task_id: "task_...", cursor: 0 })
-get_task_result({ task_id: "task_..." })
-```
-
-The defaults come from your runtime profile — provider, account, backend, target mode, framework, and runtime tools are all resolved for you.
-
-## Tools
-
-| Tool | What it does |
-| --- | --- |
-| `spawn_cloud_agent` | The shortcut. One `instruction`, defaults from a runtime profile, returns a `task_id`. |
-| `dispatch_task` | The escape hatch. Full control over provider, capability, backend, target, and input. |
-| `get_task_status` | Current status for a dispatched task. |
-| `get_task_logs` | Paginated logs, cursor-based. |
-| `get_task_result` | Final result payload when the task completes. |
-| `cancel_task` | Cancel an in-flight task. |
-| `list_providers` | Providers configured in this server. |
-| `list_capabilities` | Capabilities a provider exposes (filterable). |
-| `list_account_profiles` | Account profiles configured for dispatch. |
-
-All tool inputs are validated with [Zod](https://zod.dev). See [`src/schemas.ts`](src/schemas.ts) for the exact shapes.
+The defaults come from your runtime profile — provider, account, backend, target mode, framework, and runtime tools are all resolved for you. From the model side, `spawn_cloud_agent({ instruction })` is the only call you need.
 
 ## How it works
 
 ```
-   MCP client (Claude, Cursor, Claude Code)
-                 │  stdio
-                 ▼
-   ┌─────────────────────────────┐
-   │  @agent-dispatch/mcp-server │   ← this repo
-   └──────────────┬──────────────┘
-                  │
-                  ▼
-   ┌─────────────────────────────┐
-   │     @agent-dispatch/core    │   ← runtime contracts + dispatch
-   └──────┬──────────┬───────────┘
+   Claude Code   ·   OpenClaw   ·   Hermes   ·   any MCP client
+                          │  stdio
+                          ▼
+   ┌─────────────────────────────────────────────┐
+   │       @agent-dispatch/mcp-server            │   ← this repo
+   └─────────────────────┬───────────────────────┘
+                         │
+                         ▼
+   ┌─────────────────────────────────────────────┐
+   │           @agent-dispatch/core              │   ← contracts + dispatch
+   └──────┬──────────┬───────────────────────────┘
           │          │
           ▼          ▼
-   ┌──────────┐  ┌────────────────────────────┐
-   │  store   │  │  adapter (e.g. AWS         │
-   │ (sqlite) │  │  AgentCore) → worker       │
-   └──────────┘  └────────────────────────────┘
+   ┌──────────┐  ┌──────────────────────────────────┐
+   │  store   │  │  adapter (AWS Bedrock AgentCore) │
+   │ (sqlite) │  │      ↓                           │
+   └──────────┘  │  cloud worker — runs the task    │
+                 └──────────────────────────────────┘
 ```
 
-1. **Caller** issues a tool call over MCP.
-2. **MCP server** validates input, hydrates defaults from a runtime profile, and calls the core runtime.
+1. **Local assistant** issues `spawn_cloud_agent` over MCP.
+2. **MCP server** validates input, hydrates defaults from a runtime profile, calls the core runtime.
 3. **Core** picks the right capability + adapter, persists the task, dispatches.
-4. **Adapter** invokes the worker on the target cloud (synchronous, session, or job).
-5. Status, logs, and results flow back the same way.
+4. **Adapter** invokes the worker in your cloud — synchronous, session, or job target mode.
+5. **Worker** runs the actual framework (Strands / OpenClaw / Hermes / your own) on managed cloud infrastructure.
+6. Status, logs, and results flow back through the same path.
 
 ## Configuration
 
-Minimal AWS Bedrock AgentCore (session mode):
+Minimal AWS Bedrock AgentCore (session mode) for an OpenClaw-style research agent:
 
 ```json
 {
@@ -156,8 +187,8 @@ Minimal AWS Bedrock AgentCore (session mode):
       "capability": "agent-runtime",
       "backend": "aws-agentcore",
       "target": { "mode": "session" },
-      "framework": "strands",
-      "runtimeTools": { "enabled": ["web-search"] }
+      "framework": "openclaw",
+      "runtimeTools": { "enabled": ["web-search", "code-interpreter"] }
     }
   },
   "defaults": {
@@ -166,7 +197,7 @@ Minimal AWS Bedrock AgentCore (session mode):
 }
 ```
 
-Once `defaults.runtime` is set, `spawn_cloud_agent` only needs an `instruction`. Everything else is resolved from the named runtime profile.
+Once `defaults.runtime` is set, `spawn_cloud_agent` only needs an `instruction`. Switch the `framework` field to run Strands, Hermes, or your own worker contract.
 
 Validate the wiring before connecting an MCP client:
 
@@ -176,10 +207,10 @@ npx agentdispatch-mcp --config agentdispatch.config.json --check
 
 ## Real-world use cases
 
-- **Background research from chat.** Tell Claude "go investigate X, come back when you have findings" — the model spawns a session-mode agent, polls status, returns the result inline.
+- **Deep research from chat.** Claude Code spawns a cloud agent: "Read the last 90 days of CloudTrail anomalies and propose detection rules." The session keeps going. Twenty minutes later it pulls the result.
 - **Parallel codebase audits.** Claude Code fans out a dozen `spawn_cloud_agent` calls, one per service, and aggregates the reports.
-- **Long-running data jobs.** Job-mode tasks run for minutes-to-hours without holding the assistant's context open.
-- **Tool-using cloud agents.** Compose runtime tools (web search, code interpreter, etc.) into a single runtime profile and reuse from anywhere.
+- **Long-running OpenClaw runs.** OpenClaw plans the work locally, dispatches the multi-hour execution to a managed AgentCore worker.
+- **Tool-rich Hermes jobs.** Hermes uses cloud-side tools (web, code interpreter, repo access) that aren't available to the local process.
 
 ## The rest of AgentDispatch
 
@@ -201,7 +232,7 @@ This MCP server is one face of a small, focused stack:
 
 PRs, issues, and adapter contributions are welcome. See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the local workflow.
 
-If you ship a new adapter, please open a discussion — we'd love to link it from the org README.
+If you ship a new framework worker (or a new cloud adapter), please open a discussion — we'd love to link it from the org README.
 
 ## License
 

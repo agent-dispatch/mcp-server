@@ -1,41 +1,63 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 180" width="720" height="180" role="img" aria-label="AgentDispatch">
-  <title>AgentDispatch</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 180" width="760" height="180" role="img" aria-label="AgentDispatch">
+  <title>AgentDispatch — cloud agents for AI assistants</title>
   <defs>
-    <linearGradient id="wm-grad" x1="0" y1="0" x2="160" y2="160" gradientUnits="userSpaceOnUse">
+    <linearGradient id="wm-grad" x1="0" y1="40" x2="160" y2="160" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#A78BFA"/>
+      <stop offset="0.55" stop-color="#7C3AED"/>
+      <stop offset="1" stop-color="#06B6D4"/>
+    </linearGradient>
+    <linearGradient id="wm-tile" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#22D3EE"/>
+      <stop offset="1" stop-color="#06B6D4"/>
+    </linearGradient>
+    <linearGradient id="wm-text" x1="200" y1="80" x2="740" y2="80" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#7C3AED"/>
       <stop offset="1" stop-color="#06B6D4"/>
     </linearGradient>
-    <linearGradient id="wm-text" x1="200" y1="80" x2="700" y2="80" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#7C3AED"/>
-      <stop offset="1" stop-color="#06B6D4"/>
-    </linearGradient>
-    <radialGradient id="wm-glow" cx="80" cy="80" r="32" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#A78BFA" stop-opacity="0.5"/>
+    <radialGradient id="wm-glow" cx="64" cy="78" r="50" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#A78BFA" stop-opacity="0.55"/>
       <stop offset="1" stop-color="#A78BFA" stop-opacity="0"/>
     </radialGradient>
   </defs>
 
   <g transform="translate(10,10)">
     <rect width="160" height="160" rx="36" fill="#0B1020"/>
-    <circle cx="80" cy="80" r="32" fill="url(#wm-glow)"/>
+    <circle cx="64" cy="78" r="50" fill="url(#wm-glow)"/>
 
-    <g stroke="url(#wm-grad)" stroke-width="8" stroke-linecap="round" fill="none">
-      <line x1="80" y1="80" x2="24" y2="80"/>
-      <line x1="80" y1="80" x2="128.5" y2="52"/>
-      <line x1="80" y1="80" x2="128.5" y2="108"/>
+    <g fill="#A78BFA" opacity="0.65">
+      <circle cx="27" cy="51" r="1.6"/>
+      <circle cx="94" cy="46" r="1.9"/>
+      <circle cx="22" cy="110" r="1.6"/>
+      <circle cx="78" cy="118" r="1.8"/>
     </g>
 
-    <circle cx="24" cy="80" r="10" fill="#7C3AED"/>
-    <circle cx="128.5" cy="52" r="10" fill="#06B6D4"/>
-    <circle cx="128.5" cy="108" r="10" fill="#06B6D4"/>
+    <g stroke="url(#wm-grad)" stroke-width="5.2" stroke-linecap="round" fill="none">
+      <line x1="94" y1="69" x2="132" y2="45"/>
+      <line x1="98" y1="80" x2="136" y2="80"/>
+      <line x1="94" y1="91" x2="132" y2="115"/>
+    </g>
 
-    <circle cx="80" cy="80" r="18" fill="url(#wm-grad)"/>
-    <circle cx="80" cy="80" r="5" fill="#FFFFFF"/>
+    <g fill="url(#wm-grad)">
+      <circle cx="40" cy="86" r="17.5"/>
+      <circle cx="62" cy="66" r="22"/>
+      <circle cx="88" cy="80" r="17.5"/>
+      <rect x="34" y="82" width="58" height="20" rx="10"/>
+    </g>
+
+    <ellipse cx="61" cy="58" rx="12.6" ry="4.5" fill="#FFFFFF" opacity="0.18"/>
+
+    <g>
+      <rect x="125" y="37" width="17" height="17" rx="4.4" fill="url(#wm-tile)"/>
+      <rect x="129" y="71" width="17" height="17" rx="4.4" fill="url(#wm-tile)"/>
+      <rect x="125" y="107" width="17" height="17" rx="4.4" fill="url(#wm-tile)"/>
+      <g fill="#0B1020">
+        <path d="M131 42 L137 45.5 L131 49 Z"/>
+        <path d="M135 76 L141 79.5 L135 83 Z"/>
+        <path d="M131 112 L137 115.5 L131 119 Z"/>
+      </g>
+    </g>
   </g>
 
-  <g font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Inter, sans-serif" font-weight="800">
-    <text x="200" y="108" font-size="64" fill="#0B1020">Agent<tspan fill="url(#wm-text)">Dispatch</tspan></text>
-  </g>
-
-  <text x="202" y="142" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Inter, sans-serif" font-size="18" font-weight="500" fill="#475569" letter-spacing="0.04em">PROVIDER-NEUTRAL RUNTIME FOR AI AGENTS</text>
+  <text x="200" y="108" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Inter, sans-serif" font-size="62" font-weight="800" fill="#0B1020" letter-spacing="-0.02em">Agent<tspan fill="url(#wm-text)">Dispatch</tspan></text>
+  <text x="202" y="140" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Inter, sans-serif" font-size="17" font-weight="600" fill="#475569" letter-spacing="0.08em">CLOUD AGENTS FOR AI ASSISTANTS</text>
 </svg>

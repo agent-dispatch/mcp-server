@@ -159,6 +159,44 @@ section { padding: 72px 24px; }
   font-size: 17px;
 }
 
+/* Made for */
+.made-for { background: linear-gradient(180deg, transparent, rgba(124,58,237,0.05), transparent); }
+.agent-grid {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+.agent-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  transition: transform .15s ease, border-color .15s ease, background .15s ease;
+}
+.agent-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(167, 139, 250, 0.45);
+}
+.agent-name {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 8px;
+}
+.agent-card p { margin: 0; color: var(--text-muted); font-size: 15px; }
+.footnote {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 14px;
+  margin-top: 28px;
+}
+
 /* Features */
 .features-grid, .repo-grid {
   max-width: var(--maxw);

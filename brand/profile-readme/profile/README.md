@@ -1,15 +1,15 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="./assets/wordmark-dark.svg">
-    <img src="./assets/wordmark.svg" alt="AgentDispatch" width="560">
+    <img src="./assets/wordmark.svg" alt="AgentDispatch" width="580">
   </picture>
 </p>
 
-<h3 align="center">The provider-neutral runtime for AI agents.</h3>
+<h3 align="center">Spawn cloud agents from your AI.</h3>
 
 <p align="center">
-  One contract. Any agent. Any cloud.<br/>
-  Spawn long-running cloud agents from your CLI, your code, or any MCP client — without picking a provider for life.
+  Claude Code, OpenClaw, and Hermes plan brilliantly — and choke on multi-hour work.<br/>
+  AgentDispatch hands them a managed cloud runtime: one MCP call, results when they land.
 </p>
 
 <p align="center">
@@ -22,78 +22,89 @@
 
 ---
 
-## Why AgentDispatch?
+## The problem
 
-Every agent runtime today ships its own API, its own worker contract, its own deployment story. Pick one and you're locked in. Switch providers and you rewrite orchestration code from scratch.
+Local AI assistants — Claude Code, OpenClaw, Hermes — plan brilliantly. They get cramped the moment work gets long. A deep-research sweep, an account-wide audit, a multi-hour reasoning job: none of it belongs in a laptop's context window.
 
-**AgentDispatch is the dispatch layer in between.** Write one integration. Point it at AWS Bedrock AgentCore today, plug in something else tomorrow — without touching the calling code.
+## The fix
 
-- 🧠 **Built for the agent era.** Long-running, stateful, multi-step tasks are first-class.
-- 🧩 **Provider-neutral by design.** A small, stable capability + adapter contract.
-- ⚡ **Three faces, one runtime.** CLI for humans, SDK for code, MCP server for AI assistants.
-- 🪶 **Lightweight defaults.** SQLite store. stdio transport. Zero hidden services.
-- 🔓 **Open.** Apache-2.0 across the stack. Adapter template included.
+AgentDispatch is the one tool your local agent is missing: **spawn a cloud agent with this instruction, come back later for the result.** The run happens on managed cloud compute. Status, logs, and final output stream back over MCP.
+
+```
+spawn_cloud_agent({ instruction: "Audit every Lambda for public invoke." })
+// → task_id, then status / logs / result on demand
+```
+
+- ☁️ **Real cloud, not your laptop.** AWS Bedrock AgentCore today; bring your own cloud tomorrow.
+- ⏱️ **Built for marathons.** Sync, session, or job mode — same API.
+- 🔭 **Full visibility.** Status, logs, results, cancellation.
+- 🪶 **Boring defaults.** SQLite, stdio, no hidden services.
+
+## Made for the agents you already use
+
+| Local assistant | What it gets |
+| --- | --- |
+| 🤖 **Claude Code** | A cloud companion for parallel audits, long refactors, and deep-research sweeps. |
+| 🦅 **OpenClaw** | Offloads multi-step research and tool-rich runs to a managed cloud worker. |
+| 🪽 **Hermes** | Runs long-context reasoning and hours-long jobs without leaving the chat. |
+| Claude Desktop · Cursor · Continue · Goose · Zed | Same MCP config, same primitive. |
+
+## Three faces, one runtime
+
+- **MCP server** — for AI assistants ([`mcp-server`](https://github.com/agent-dispatch/mcp-server)).
+- **TypeScript SDK** — for your own application code ([`sdk-js`](https://github.com/agent-dispatch/sdk-js)).
+- **CLI** — for operators and scripts ([`cli`](https://github.com/agent-dispatch/cli)).
+
+All three call into the same dispatcher and share the same runtime profiles.
 
 ## How it fits together
 
 ```
-   Humans              Apps              AI assistants
-     │                  │                      │
-     ▼                  ▼                      ▼
-   ┌─────┐         ┌─────────┐          ┌─────────────┐
-   │ cli │         │ sdk-js  │          │ mcp-server  │
-   └──┬──┘         └────┬────┘          └──────┬──────┘
-      └─────────────────┼──────────────────────┘
-                        ▼
-              ┌───────────────────┐
-              │       core        │  ← contracts + dispatch
-              └─────────┬─────────┘
-        ┌───────────────┼────────────────┐
-        ▼               ▼                ▼
-  ┌──────────┐    ┌──────────┐    ┌──────────────────┐
-  │  store   │    │ adapter  │ →  │ worker (in cloud)│
-  │ (sqlite) │    │   (aws)  │    └──────────────────┘
-  └──────────┘    └──────────┘
+   Claude Code   ·   OpenClaw   ·   Hermes
+                      │  MCP
+                      ▼
+            ┌───────────────────┐
+            │   AgentDispatch   │   ← spawn / status / logs / result / cancel
+            └─────────┬─────────┘
+                      │
+                      ▼
+            ┌───────────────────┐
+            │   cloud adapter   │   (AWS Bedrock AgentCore today)
+            └─────────┬─────────┘
+                      ▼
+            ┌───────────────────┐
+            │   cloud worker    │   runs Strands · OpenClaw · Hermes · your framework
+            └───────────────────┘
 ```
 
-## Start here
-
-Most people want one of these three:
-
-- **AI assistant control plane** — wire [`mcp-server`](https://github.com/agent-dispatch/mcp-server) into Claude Desktop / Cursor / Claude Code and your model can spawn cloud agents on demand.
-- **From your own app** — install [`sdk-js`](https://github.com/agent-dispatch/sdk-js) and call `client.spawnCloudAgent({...})`.
-- **From your terminal** — `npx @agent-dispatch/cli spawn "..."` and watch it run.
-
-```bash
-npm install \
-  @agent-dispatch/core \
-  @agent-dispatch/mcp-server \
-  @agent-dispatch/store-sqlite \
-  @agent-dispatch/adapter-aws-agentcore
-```
+The adapter contract is small and stable, so a new cloud (or a new framework) is a focused, well-scoped addition — not a rewrite.
 
 ## Repositories
 
 | Repo | What it is |
 | --- | --- |
+| [`mcp-server`](https://github.com/agent-dispatch/mcp-server) | **Start here.** MCP face for the runtime — the viral entry point. |
 | [`core`](https://github.com/agent-dispatch/core) | Runtime contracts and dispatch orchestration. The heart. |
-| [`mcp-server`](https://github.com/agent-dispatch/mcp-server) | MCP face for the runtime. The viral entry point. |
 | [`sdk-js`](https://github.com/agent-dispatch/sdk-js) | TypeScript SDK for application code. |
 | [`cli`](https://github.com/agent-dispatch/cli) | Command-line interface for operators. |
 | [`store-sqlite`](https://github.com/agent-dispatch/store-sqlite) | Default SQLite + filesystem state store. |
 | [`adapter-aws-agentcore`](https://github.com/agent-dispatch/adapter-aws-agentcore) | AWS Bedrock AgentCore adapter. |
-| [`worker-agentcore`](https://github.com/agent-dispatch/worker-agentcore) | Standard AgentCore worker contract. |
+| [`worker-agentcore`](https://github.com/agent-dispatch/worker-agentcore) | Standard AgentCore worker contract (reference Strands / OpenClaw / Hermes workers live here). |
 | [`adapter-template`](https://github.com/agent-dispatch/adapter-template) | Starter for new cloud adapters. |
 | [`docs`](https://github.com/agent-dispatch/docs) | Documentation and guides. |
 
-## Build your own adapter
+## Build a new worker or adapter
 
-Adding a new provider is meant to be a focused, well-scoped task. Fork [`adapter-template`](https://github.com/agent-dispatch/adapter-template), implement the five-method contract from [`core`](https://github.com/agent-dispatch/core), ship.
+A new **framework worker** is a function that maps `{ instruction, context, framework, runtime_tools }` to a result envelope — see [`worker-agentcore`](https://github.com/agent-dispatch/worker-agentcore).
+
+A new **cloud adapter** implements five methods (dispatch, status, logs, result, cancel) — fork [`adapter-template`](https://github.com/agent-dispatch/adapter-template).
+
+Open a discussion when you ship — we'd love to link it.
 
 ## Community
 
 - Issues and PRs welcome on any repo.
-- Open a discussion on `docs` for questions, design ideas, or to share an adapter you've built.
+- Architecture questions, framework integrations, and ideas → open a discussion in `docs`.
 
 <p align="center">
   <sub>Apache-2.0 · Built by the AgentDispatch contributors</sub>
