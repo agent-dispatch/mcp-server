@@ -1,6 +1,6 @@
 {
   "name": "@agent-dispatch/mcp-server",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Provider-neutral MCP server for AgentDispatch.",
   "type": "module",
   "license": "Apache-2.0",
