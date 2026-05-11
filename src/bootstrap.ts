@@ -29,6 +29,28 @@ export async function createRuntimeServiceFromConfigFile(options: RuntimeBootstr
   return createRuntimeServiceFromConfig(config, options);
 }
 
+export function createRuntimeCheckReport(runtime: RuntimeService) {
+  return {
+    ok: true,
+    providers: runtime.listProviders(),
+    capabilities: runtime.listCapabilities(),
+    accounts: runtime.listAccountProfiles().map((account) => ({
+      name: account.name,
+      provider: account.provider,
+      region: account.region,
+      credentialSource: account.credentialSource
+    })),
+    runtimes: runtime.listRuntimeProfiles().map((runtimeProfile) => ({
+      name: runtimeProfile.name,
+      provider: runtimeProfile.provider,
+      account: runtimeProfile.account,
+      capability: runtimeProfile.capability,
+      backend: runtimeProfile.backend,
+      target: runtimeProfile.target
+    }))
+  };
+}
+
 function createConfiguredAdapters(config: AgentDispatchConfig): BackendAdapter[] {
   const adapters: BackendAdapter[] = [];
   for (const backend of Object.values(config.backends)) {

@@ -23,6 +23,12 @@ npx agentdispatch-mcp --config agentdispatch.config.json
 
 The server loads account profiles, SQLite storage, and configured adapters from `agentdispatch.config.json`.
 
+Before wiring it into an MCP client, validate that the stdio server can load config:
+
+```bash
+npx agentdispatch-mcp --config agentdispatch.config.json --check
+```
+
 Configure `defaults.runtime` for the simple agent path. Agents can then call `spawn_cloud_agent` with only an `instruction`; AgentDispatch resolves provider, account, backend, target mode, framework, and runtime tool defaults from the named runtime profile.
 
 Minimal AWS AgentCore session-mode config:
