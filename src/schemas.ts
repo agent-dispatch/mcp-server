@@ -39,8 +39,8 @@ export const taskIdInputSchema = z.object({
 
 export const getTaskLogsInputSchema = z.object({
   task_id: z.string(),
-  cursor: z.number().optional(),
-  limit: z.number().optional()
+  cursor: z.number().int().nonnegative().optional(),
+  limit: z.number().int().positive().max(64_000).optional()
 });
 
 export const mcpToolSchemas = {

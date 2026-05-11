@@ -1,9 +1,10 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { AgentDispatchError, type DispatchRequest, type RuntimeProfile, type RuntimeService } from "@agent-dispatch/core";
+import packageJson from "../package.json" with { type: "json" };
 import { mcpToolSchemas } from "./schemas.js";
 
 export function createAgentDispatchMcpServer(runtime: RuntimeService): McpServer {
-  const server = new McpServer({ name: "agentdispatch", version: "0.1.0" });
+  const server = new McpServer({ name: "agentdispatch", version: packageJson.version });
 
   server.tool("list_providers", mcpToolSchemas.list_providers.shape, async () => jsonContent(runtime.listProviders()));
 
