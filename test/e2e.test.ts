@@ -1,8 +1,17 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
-import { describe, expect, it } from "vitest";
+import { mkdtemp, rm } from "node:fs/promises";
+import { join } from "node:path";
+import { tmpdir } from "node:os";
+import { afterEach, describe, expect, it } from "vitest";
 import { RuntimeService, type BackendAdapter, type DispatchRequest, type RuntimeEvent, type RuntimeRecord, type TaskStore } from "@agent-dispatch/core";
-import { createAgentDispatchMcpServer } from "../src/index.js";
+import { createAgentDispatchMcpServer, createRuntimeServiceFromConfig } from "../src/index.js";
+
+const tempDirs: string[] = [];
+
+afterEach(async () => {
+  await Promise.all(tempDirs.splice(0).map((dir) => rm(dir, { recursive: true, force: true })));
+});
 
 class MemoryStore implements TaskStore {
   private readonly tasks = new Map<string, any>();
@@ -246,6 +255,79 @@ describe("MCP tool invocation", () => {
         questions: expect.arrayContaining([
           expect.objectContaining({ id: "instruction" })
         ])
+      });
+    } finally {
+      await client.close();
+      await server.close();
+    }
+  });
+
+  it("runs spawn_cloud_agent end-to-end through config bootstrap and SQLite state", async () => {
+    const stateDir = await mkdtemp(join(tmpdir(), "agentdispatch-mcp-e2e-"));
+    tempDirs.push(stateDir);
+    const runtime = await createRuntimeServiceFromConfig({
+      stateDir,
+      accounts: {
+        "dev-aws": { provider: "aws", region: "us-west-2", credentialSource: "aws-sdk-default" }
+      },
+      backends: {
+        "mock-backend": {
+          provider: "aws",
+          capability: "agent-runtime",
+          adapter: "mock-agent-runtime",
+          account: "dev-aws"
+        }
+      },
+      defaults: {
+        provider: "aws",
+        accountProfile: "dev-aws",
+        capability: "agent-runtime",
+        backend: "mock-backend",
+        targetMode: "session",
+        protocol: "a2a",
+        framework: "smoke",
+        model: { provider: "test", modelId: "smoke-model" },
+        runtimeTools: { enabled: ["repo-search"] }
+      }
+    }, {
+      adapters: [mockAdapter([{ taskId: "ignored", type: "task.log", message: "sqlite smoke log" }])]
+    });
+    const { client, server } = await createClient(runtime);
+    try {
+      const handle = await callJson(client, "spawn_cloud_agent", {
+        instruction: "run SQLite-backed smoke path",
+        context: { repo: "agent-dispatch" }
+      });
+      expect(handle).toMatchObject({
+        provider: "aws",
+        accountProfile: "dev-aws",
+        capability: "agent-runtime",
+        backend: "mock-agent-runtime",
+        cloudAgent: {
+          protocol: "a2a",
+          sessionId: "agentcore_session_mock"
+        }
+      });
+
+      const task = await waitForTerminalStatus(client, handle.taskId);
+      expect(task).toMatchObject({
+        status: "succeeded",
+        taskType: "agent.run",
+        target: { mode: "session", protocol: "a2a" },
+        input: {
+          instruction: "run SQLite-backed smoke path",
+          context: { repo: "agent-dispatch" },
+          framework: "smoke",
+          model: { provider: "test", modelId: "smoke-model" },
+          runtime_tools: { enabled: ["repo-search"] }
+        }
+      });
+      await expect(callJson(client, "get_task_logs", { task_id: handle.taskId })).resolves.toMatchObject({
+        data: "sqlite smoke log\n"
+      });
+      await expect(callJson(client, "get_task_result", { task_id: handle.taskId })).resolves.toMatchObject({
+        status: "succeeded",
+        result: { ok: true }
       });
     } finally {
       await client.close();

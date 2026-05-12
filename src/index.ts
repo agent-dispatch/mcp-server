@@ -76,11 +76,12 @@ function createSpawnCloudAgentRequest(runtime: RuntimeService, input: {
   const targetMode = input.target?.mode ?? profile?.target?.mode ?? defaults.targetMode ?? "session";
   const protocol = input.protocol ?? input.target?.protocol ?? profile?.protocol ?? profile?.target?.protocol ?? defaults.protocol;
   const capability = selectCapability(runtime, account.provider, targetMode, profile?.capability ?? defaults.capability);
+  const backend = profile?.backend ?? defaults.backend;
   return {
     provider: account.provider,
     accountProfile: account.name,
     capability,
-    backend: profile?.backend,
+    backend,
     taskType: "agent.run",
     target: {
       mode: targetMode,

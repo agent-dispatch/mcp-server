@@ -48,7 +48,7 @@ A single MCP server exposes nine tools to your assistant:
 
 | Tool | What it does |
 | --- | --- |
-| `spawn_cloud_agent` | The shortcut. One `instruction`, defaults from a runtime profile, returns a durable `task_id` and optional `cloud_agent` metadata. |
+| `spawn_cloud_agent` | The shortcut. One `instruction`, defaults from a runtime profile, returns a durable `taskId` and optional `cloudAgent` metadata. |
 | `dispatch_task` | The escape hatch. Full control over provider, capability, backend, target, and input. |
 | `get_task_status` | Current status for a dispatched task. |
 | `get_task_logs` | Paginated logs, cursor-based. |
@@ -62,7 +62,7 @@ The model side looks like this:
 
 ```ts
 spawn_cloud_agent({ instruction: "Audit our S3 buckets for public read and report findings." })
-// → { task_id: "task_...", status: "running", cloud_agent: { ... } }
+// → { taskId: "task_...", status: "queued", cloudAgent: { ... } }
 
 get_task_status({ task_id: "task_..." })
 get_task_logs({ task_id: "task_...", cursor: 0, limit: 200 })
@@ -74,6 +74,8 @@ All tool inputs are validated with [Zod](https://zod.dev). See [`src/schemas.ts`
 ## Agent-facing contract
 
 `spawn_cloud_agent` is intentionally small. Runtime profiles supply the provider, account, backend, target mode, framework, model, protocol, and default tools.
+
+Tool inputs use MCP-friendly snake_case. Responses return the same camelCase object shape as the AgentDispatch SDK and core runtime.
 
 ```json
 {
@@ -91,21 +93,22 @@ Immediate response:
 
 ```json
 {
-  "task_id": "task_...",
-  "status": "running",
+  "taskId": "task_...",
+  "status": "queued",
   "provider": "aws",
-  "account_profile": "dev-aws",
+  "accountProfile": "dev-aws",
   "capability": "agent-runtime",
   "backend": "aws-agentcore",
   "poll": {
-    "status_tool": "get_task_status",
-    "logs_tool": "get_task_logs",
-    "result_tool": "get_task_result"
+    "statusTool": "get_task_status",
+    "logsTool": "get_task_logs",
+    "resultTool": "get_task_result"
   },
-  "cloud_agent": {
+  "cloudAgent": {
     "protocol": "a2a",
     "provider": "aws",
     "backend": "aws-agentcore",
+    "accountProfile": "dev-aws",
     "sessionId": "ad-f7221e93f25499a0a1fc0160f63c7621",
     "invocation": {
       "type": "aws.agentcore.invoke_agent_runtime",
@@ -203,7 +206,7 @@ The defaults come from your runtime profile. From the model side, `spawn_cloud_a
 3. Core picks the capability and adapter, persists the task, dispatches.
 4. Adapter invokes the worker in your cloud.
 5. Worker runs an agent framework on managed cloud infrastructure.
-6. Status, logs, results, and optional `cloud_agent` metadata flow back through the same path.
+6. Status, logs, results, and optional `cloudAgent` metadata flow back through the same path.
 
 ## Configuration
 
@@ -261,7 +264,7 @@ npx agentdispatch-mcp --config agentdispatch.config.json --check
 `spawn_cloud_agent` is the control-plane call. After spawn, the lead agent can:
 
 - Poll via `get_task_status`, `get_task_logs`, and `get_task_result`.
-- Continue native subagent interaction with returned `cloud_agent` protocol metadata.
+- Continue native subagent interaction with returned `cloudAgent` protocol metadata.
 - Use A2A JSON-RPC `message/send` when the runtime protocol is `a2a`.
 - Cancel through AgentDispatch so provider references remain durable.
 
