@@ -139,6 +139,17 @@ If the agent does not provide enough information, the server returns a structure
 }
 ```
 
+The agent can answer the clarification directly on the next `spawn_cloud_agent` call:
+
+```json
+{
+  "instruction": "Audit our S3 buckets for public read.",
+  "runtimeArn": "arn:aws:bedrock-agentcore:us-west-2:123456789012:agent/..."
+}
+```
+
+Runtime-mode clarifications work the same way with `ecrImageUri`, `executionRoleArn`, and optional `environmentVariables`.
+
 ## Supported clients and frameworks
 
 Anything that speaks MCP works. The common clients today:

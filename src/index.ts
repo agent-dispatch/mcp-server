@@ -64,6 +64,14 @@ function createSpawnCloudAgentRequest(runtime: RuntimeService, input: {
   framework?: string;
   model?: string | Record<string, unknown>;
   runtime_tools?: Record<string, unknown>;
+  runtimeArn?: string;
+  runtime_arn?: string;
+  ecrImageUri?: string;
+  ecr_image_uri?: string;
+  executionRoleArn?: string;
+  execution_role_arn?: string;
+  environmentVariables?: Record<string, unknown>;
+  environment_variables?: Record<string, unknown>;
   provider?: string;
   account_profile?: string;
   target?: { mode?: string; protocol?: string; details?: Record<string, unknown> };
@@ -86,7 +94,7 @@ function createSpawnCloudAgentRequest(runtime: RuntimeService, input: {
     target: {
       mode: targetMode,
       protocol,
-      details: mergeRecords(profile?.target?.details, input.target?.details)
+      details: mergeRecords(profile?.target?.details, spawnTargetDetails(input), input.target?.details)
     },
     input: {
       instruction: input.instruction?.trim(),
@@ -108,6 +116,14 @@ function createSpawnClarification(runtime: RuntimeService, input: {
   framework?: string;
   model?: string | Record<string, unknown>;
   runtime_tools?: Record<string, unknown>;
+  runtimeArn?: string;
+  runtime_arn?: string;
+  ecrImageUri?: string;
+  ecr_image_uri?: string;
+  executionRoleArn?: string;
+  execution_role_arn?: string;
+  environmentVariables?: Record<string, unknown>;
+  environment_variables?: Record<string, unknown>;
   provider?: string;
   account_profile?: string;
   target?: { mode?: string; protocol?: string; details?: Record<string, unknown> };
@@ -140,7 +156,7 @@ function createSpawnClarification(runtime: RuntimeService, input: {
   const backendName = selectedProfile?.backend ?? defaults.backend;
   const backend = backendName ? runtime.getBackend(backendName) : undefined;
   const targetMode = input.target?.mode ?? selectedProfile?.target?.mode ?? defaults.targetMode ?? "session";
-  const targetDetails = mergeRecords(selectedProfile?.target?.details, input.target?.details) ?? {};
+  const targetDetails = mergeRecords(selectedProfile?.target?.details, spawnTargetDetails(input), input.target?.details) ?? {};
   const accounts = runtime.listAccountProfiles();
   const matchingAccounts = provider ? accounts.filter((account) => account.provider === provider) : accounts;
   if (accounts.length === 0) {
@@ -255,6 +271,32 @@ function mergeRecords(...records: Array<Record<string, unknown> | undefined>): R
   return Object.keys(merged).length > 0 ? merged : undefined;
 }
 
+function spawnTargetDetails(input: {
+  runtimeArn?: string;
+  runtime_arn?: string;
+  ecrImageUri?: string;
+  ecr_image_uri?: string;
+  executionRoleArn?: string;
+  execution_role_arn?: string;
+  environmentVariables?: Record<string, unknown>;
+  environment_variables?: Record<string, unknown>;
+}): Record<string, unknown> | undefined {
+  return mergeRecords(
+    stringRecord("runtimeArn", input.runtimeArn ?? input.runtime_arn),
+    stringRecord("ecrImageUri", input.ecrImageUri ?? input.ecr_image_uri),
+    stringRecord("executionRoleArn", input.executionRoleArn ?? input.execution_role_arn),
+    recordRecord("environmentVariables", input.environmentVariables ?? input.environment_variables)
+  );
+}
+
+function stringRecord(key: string, value: unknown): Record<string, unknown> | undefined {
+  return typeof value === "string" && value.length > 0 ? { [key]: value } : undefined;
+}
+
+function recordRecord(key: string, value: unknown): Record<string, unknown> | undefined {
+  return value && typeof value === "object" && !Array.isArray(value) ? { [key]: value } : undefined;
+}
+
 function hasSpawnInput(
   input: {
     context?: Record<string, unknown>;
@@ -262,6 +304,14 @@ function hasSpawnInput(
     model?: string | Record<string, unknown>;
     protocol?: string;
     framework?: string;
+    runtimeArn?: string;
+    runtime_arn?: string;
+    ecrImageUri?: string;
+    ecr_image_uri?: string;
+    executionRoleArn?: string;
+    execution_role_arn?: string;
+    environmentVariables?: Record<string, unknown>;
+    environment_variables?: Record<string, unknown>;
     target?: { protocol?: string; details?: Record<string, unknown> };
     metadata?: Record<string, unknown>;
   },
@@ -273,6 +323,10 @@ function hasSpawnInput(
   if (key === "protocol") return Boolean(input.protocol ?? input.target?.protocol ?? profile?.protocol ?? profile?.target?.protocol ?? defaults.protocol);
   if (key === "framework") return Boolean(input.framework ?? profile?.framework ?? defaults.framework);
   if (key === "runtime_tools") return Boolean(input.runtime_tools ?? profile?.runtimeTools ?? defaults.runtimeTools);
+  if (key === "runtimeArn") return Boolean(input.runtimeArn ?? input.runtime_arn ?? input.target?.details?.runtimeArn ?? profile?.target?.details?.runtimeArn);
+  if (key === "ecrImageUri") return Boolean(input.ecrImageUri ?? input.ecr_image_uri ?? input.target?.details?.ecrImageUri ?? profile?.target?.details?.ecrImageUri);
+  if (key === "executionRoleArn") return Boolean(input.executionRoleArn ?? input.execution_role_arn ?? input.target?.details?.executionRoleArn ?? profile?.target?.details?.executionRoleArn);
+  if (key === "environmentVariables") return Boolean(input.environmentVariables ?? input.environment_variables ?? input.target?.details?.environmentVariables ?? profile?.target?.details?.environmentVariables);
   return Boolean(
     input.context?.[key] ??
     input.metadata?.[key] ??

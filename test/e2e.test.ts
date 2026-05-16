@@ -55,9 +55,9 @@ class MemoryStore implements TaskStore {
   async listArtifacts(taskId: string) { return this.artifacts.get(taskId) ?? []; }
 }
 
-function mockAdapter(events: RuntimeEvent[]): BackendAdapter {
+function mockAdapter(events: RuntimeEvent[], name = "mock-agent-runtime"): BackendAdapter {
   return {
-    name: "mock-agent-runtime",
+    name,
     provider: "aws",
     capabilities: () => [{ provider: "aws", capability: "agent-runtime", taskTypes: ["agent.run"], targetModes: ["session"] }],
     prepareTask: async ({ dispatch }) => ({
@@ -65,7 +65,7 @@ function mockAdapter(events: RuntimeEvent[]): BackendAdapter {
       cloudAgent: {
         protocol: dispatch.target.protocol ?? "a2a",
         provider: "aws",
-        backend: "mock-agent-runtime",
+        backend: name,
         accountProfile: dispatch.accountProfile,
         sessionId: "agentcore_session_mock",
         providerRefs: { runtimeSessionId: "agentcore_session_mock" },
@@ -77,7 +77,15 @@ function mockAdapter(events: RuntimeEvent[]): BackendAdapter {
     }),
     resolveTarget: async (request) => ({
       account: { name: request.accountProfile, provider: request.provider, credentialSource: "test" },
-      target: { provider: request.provider, accountProfile: request.accountProfile, capability: request.capability, backend: "mock-agent-runtime", mode: request.target.mode }
+      target: {
+        provider: request.provider,
+        accountProfile: request.accountProfile,
+        capability: request.capability,
+        backend: name,
+        mode: request.target.mode,
+        protocol: request.target.protocol,
+        details: request.target.details
+      }
     }),
     provision: async () => ({}),
     startTask: async () => ({ result: { ok: true } }),
@@ -255,6 +263,55 @@ describe("MCP tool invocation", () => {
         questions: expect.arrayContaining([
           expect.objectContaining({ id: "instruction" })
         ])
+      });
+    } finally {
+      await client.close();
+      await server.close();
+    }
+  });
+
+  it("accepts clarification answers as top-level spawn fields", async () => {
+    const runtime = new RuntimeService({
+      config: {
+        accounts: { "dev-aws": { provider: "aws", credentialSource: "aws-sdk-default" } },
+        backends: {
+          "aws-agentcore": {
+            provider: "aws",
+            capability: "agent-runtime",
+            adapter: "aws-agentcore",
+            account: "dev-aws"
+          }
+        },
+        runtimes: {
+          "research-agent": {
+            provider: "aws",
+            account: "dev-aws",
+            capability: "agent-runtime",
+            backend: "aws-agentcore",
+            protocol: "a2a",
+            target: { mode: "session", protocol: "a2a" }
+          }
+        },
+        defaults: { runtime: "research-agent" }
+      },
+      store: new MemoryStore(),
+      adapters: [mockAdapter([], "aws-agentcore")]
+    });
+    const { client, server } = await createClient(runtime);
+    try {
+      const missingRuntime = await callJson(client, "spawn_cloud_agent", { instruction: "run" });
+      expect(missingRuntime).toMatchObject({
+        status: "needs_clarification",
+        questions: expect.arrayContaining([expect.objectContaining({ id: "runtimeArn" })])
+      });
+
+      const handle = await callJson(client, "spawn_cloud_agent", {
+        instruction: "run",
+        runtimeArn: "arn:aws:bedrock-agentcore:us-west-2:123456789012:agent/11111111-1111-1111-1111-111111111111:1"
+      });
+      const task = await waitForTerminalStatus(client, handle.taskId);
+      expect(task.target.details).toMatchObject({
+        runtimeArn: "arn:aws:bedrock-agentcore:us-west-2:123456789012:agent/11111111-1111-1111-1111-111111111111:1"
       });
     } finally {
       await client.close();

@@ -54,6 +54,21 @@ describe("MCP schemas", () => {
     });
   });
 
+  it("accepts direct clarification answer fields", () => {
+    expect(spawnCloudAgentInputSchema.parse({
+      instruction: "run",
+      runtimeArn: "arn:aws:bedrock-agentcore:us-west-2:123456789012:agent/11111111-1111-1111-1111-111111111111:1",
+      ecrImageUri: "123456789012.dkr.ecr.us-west-2.amazonaws.com/agentdispatch-worker:latest",
+      executionRoleArn: "arn:aws:iam::123456789012:role/AgentDispatchAgentCoreExecutionRole",
+      environmentVariables: { AGENTDISPATCH_AGENT_FRAMEWORK: "openclaw" }
+    })).toMatchObject({
+      runtimeArn: expect.stringContaining("agent/11111111"),
+      ecrImageUri: expect.stringContaining("agentdispatch-worker"),
+      executionRoleArn: expect.stringContaining("AgentDispatchAgentCoreExecutionRole"),
+      environmentVariables: { AGENTDISPATCH_AGENT_FRAMEWORK: "openclaw" }
+    });
+  });
+
   it("constrains get_task_logs cursor and limit", () => {
     expect(getTaskLogsInputSchema.parse({ task_id: "task_1", cursor: 0, limit: 64_000 })).toMatchObject({
       task_id: "task_1",
