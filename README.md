@@ -44,11 +44,12 @@ Running this inline consumes context, blocks the lead-agent session, and loses c
 
 ## What it does
 
-A single MCP server exposes nine tools to your assistant:
+A single MCP server exposes ten tools to your assistant:
 
 | Tool | What it does |
 | --- | --- |
 | `spawn_cloud_agent` | The shortcut. One `instruction`, defaults from a runtime profile, returns a durable `taskId` and optional `cloudAgent` metadata. |
+| `check_cloud_agent_runtime` | Preflight a configured runtime before spawning. For AWS AgentCore, it can verify credentials and runtime/control-plane reachability. |
 | `dispatch_task` | The escape hatch. Full control over provider, capability, backend, target, and input. |
 | `get_task_status` | Current status for a dispatched task. |
 | `get_task_logs` | Paginated logs, cursor-based. |
@@ -61,6 +62,9 @@ A single MCP server exposes nine tools to your assistant:
 The model side looks like this:
 
 ```ts
+check_cloud_agent_runtime({ runtime: "research-agent" })
+// → { ok: true, checks: [...] }
+
 spawn_cloud_agent({ instruction: "Audit our S3 buckets for public read and report findings." })
 // → { taskId: "task_...", status: "queued", cloudAgent: { ... } }
 

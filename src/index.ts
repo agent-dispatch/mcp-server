@@ -1,9 +1,14 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { AgentDispatchError, type DispatchRequest, type RuntimeProfile, type RuntimeService } from "@agent-dispatch/core";
+import { checkAwsAgentCoreLivePreflight, type AwsAgentCoreLivePreflightCheck, type AwsAgentCoreLivePreflightInput } from "@agent-dispatch/adapter-aws-agentcore";
 import packageJson from "../package.json" with { type: "json" };
 import { mcpToolSchemas } from "./schemas.js";
 
-export function createAgentDispatchMcpServer(runtime: RuntimeService): McpServer {
+export interface AgentDispatchMcpServerOptions {
+  awsAgentCoreLivePreflight?: (input: AwsAgentCoreLivePreflightInput) => Promise<AwsAgentCoreLivePreflightCheck[]>;
+}
+
+export function createAgentDispatchMcpServer(runtime: RuntimeService, options: AgentDispatchMcpServerOptions = {}): McpServer {
   const server = new McpServer({ name: "agentdispatch", version: packageJson.version });
 
   server.tool("list_providers", mcpToolSchemas.list_providers.shape, async () => jsonContent(runtime.listProviders()));
@@ -13,6 +18,10 @@ export function createAgentDispatchMcpServer(runtime: RuntimeService): McpServer
   });
 
   server.tool("list_account_profiles", mcpToolSchemas.list_account_profiles.shape, async () => jsonContent(runtime.listAccountProfiles()));
+
+  server.tool("check_cloud_agent_runtime", mcpToolSchemas.check_cloud_agent_runtime.shape, async (input) => {
+    return jsonContent(await createCloudAgentRuntimeCheck(runtime, input, options));
+  });
 
   server.tool("spawn_cloud_agent", mcpToolSchemas.spawn_cloud_agent.shape, async (input) => {
     const clarification = createSpawnClarification(runtime, input);
@@ -55,6 +64,113 @@ export function createAgentDispatchMcpServer(runtime: RuntimeService): McpServer
 
 export * from "./bootstrap.js";
 export * from "./schemas.js";
+
+async function createCloudAgentRuntimeCheck(runtime: RuntimeService, input: {
+  runtime?: string;
+  provider?: string;
+  account_profile?: string;
+  live?: boolean;
+  runtimeArn?: string;
+  runtime_arn?: string;
+  target?: { mode?: string; protocol?: string; details?: Record<string, unknown> };
+}, options: AgentDispatchMcpServerOptions) {
+  const checks: Array<{ name: string; status: "pass" | "warn" | "fail"; message: string }> = [];
+  const defaults = runtime.getDefaults();
+  const profile = selectRuntimeProfileForCheck(runtime, input.runtime, input.provider);
+  if (!profile) {
+    checks.push({
+      name: "runtime",
+      status: "fail",
+      message: input.runtime
+        ? `Runtime profile ${input.runtime} is not configured.`
+        : "No default runtime profile is configured."
+    });
+    return cloudAgentRuntimeCheckResult({ checks });
+  }
+
+  const backend = runtime.getBackend(profile.backend);
+  const accountName = input.account_profile ?? profile.account ?? defaults.accountProfile;
+  const account = runtime.listAccountProfiles().find((candidate) => candidate.name === accountName);
+  const targetMode = input.target?.mode ?? profile.target?.mode ?? defaults.targetMode ?? "session";
+  checks.push({
+    name: "runtime",
+    status: "pass",
+    message: `Runtime ${profile.name} routes ${profile.provider}/${profile.capability}/${targetMode} through ${profile.backend}.`
+  });
+
+  if (!backend) {
+    checks.push({
+      name: "backend",
+      status: "fail",
+      message: `Runtime ${profile.name} references missing backend ${profile.backend}.`
+    });
+    return cloudAgentRuntimeCheckResult({ profile, account, backend, targetMode, checks });
+  }
+  checks.push({
+    name: "backend",
+    status: "pass",
+    message: `Backend ${profile.backend} uses adapter ${backend.adapter}.`
+  });
+
+  if (!account) {
+    checks.push({
+      name: "account_profile",
+      status: "fail",
+      message: accountName ? `Account profile ${accountName} is not configured.` : "No account profile is configured for this runtime."
+    });
+    return cloudAgentRuntimeCheckResult({ profile, account, backend, targetMode, checks });
+  }
+  checks.push({
+    name: "account_profile",
+    status: "pass",
+    message: `Account profile ${account.name} uses provider ${account.provider}.`
+  });
+
+  if (input.live !== false && account.provider === "aws" && backend.adapter === "aws-agentcore") {
+    const targetDetails = mergeRecords(profile.target?.details, spawnTargetDetails(input), input.target?.details) ?? {};
+    const preflight = options.awsAgentCoreLivePreflight ?? checkAwsAgentCoreLivePreflight;
+    checks.push(...await preflight({
+      runtimeName: profile.name,
+      region: account.region ?? String(backend.details?.region ?? process.env.AWS_REGION ?? "us-east-1"),
+      mode: targetMode,
+      runtimeArn: stringValue(targetDetails.runtimeArn) ?? stringValue(backend.details?.runtimeArn) ?? process.env.AGENTDISPATCH_AGENTCORE_RUNTIME_ARN
+    }));
+  } else if (input.live !== false) {
+    checks.push({
+      name: "live",
+      status: "warn",
+      message: `Live preflight is not implemented for ${account.provider}/${backend.adapter}.`
+    });
+  }
+
+  return cloudAgentRuntimeCheckResult({ profile, account, backend, targetMode, checks });
+}
+
+function cloudAgentRuntimeCheckResult(input: {
+  profile?: RuntimeProfile;
+  account?: { name: string; provider: string; region?: string; credentialSource: string };
+  backend?: { adapter: string };
+  targetMode?: string;
+  checks: Array<{ name: string; status: "pass" | "warn" | "fail"; message: string }>;
+}) {
+  return {
+    ok: input.checks.every((check) => check.status !== "fail"),
+    runtime: input.profile?.name,
+    provider: input.account?.provider ?? input.profile?.provider,
+    account_profile: input.account?.name ?? input.profile?.account,
+    backend: input.profile?.backend,
+    adapter: input.backend?.adapter,
+    target_mode: input.targetMode,
+    checks: input.checks
+  };
+}
+
+function selectRuntimeProfileForCheck(runtime: RuntimeService, runtimeName?: string, provider?: string): RuntimeProfile | undefined {
+  if (runtimeName) return runtime.getRuntimeProfile(runtimeName);
+  const defaultProfile = runtime.getDefaultRuntimeProfile();
+  if (defaultProfile && (!provider || defaultProfile.provider === provider)) return defaultProfile;
+  return runtime.listRuntimeProfiles().find((profile) => !provider || profile.provider === provider);
+}
 
 function createSpawnCloudAgentRequest(runtime: RuntimeService, input: {
   instruction?: string;
@@ -291,6 +407,10 @@ function spawnTargetDetails(input: {
 
 function stringRecord(key: string, value: unknown): Record<string, unknown> | undefined {
   return typeof value === "string" && value.length > 0 ? { [key]: value } : undefined;
+}
+
+function stringValue(value: unknown): string | undefined {
+  return typeof value === "string" && value.length > 0 ? value : undefined;
 }
 
 function recordRecord(key: string, value: unknown): Record<string, unknown> | undefined {

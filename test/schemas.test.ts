@@ -23,6 +23,7 @@ describe("MCP schemas", () => {
   it("exports stable MCP tool schemas", () => {
     expect(Object.keys(mcpToolSchemas).sort()).toEqual([
       "cancel_task",
+      "check_cloud_agent_runtime",
       "dispatch_task",
       "get_task_logs",
       "get_task_result",
@@ -32,6 +33,18 @@ describe("MCP schemas", () => {
       "list_providers",
       "spawn_cloud_agent"
     ]);
+  });
+
+  it("accepts cloud runtime preflight input", () => {
+    expect(mcpToolSchemas.check_cloud_agent_runtime.parse({
+      runtime: "research-agent",
+      live: true,
+      runtimeArn: "arn:aws:bedrock-agentcore:us-west-2:123456789012:agent/11111111-1111-1111-1111-111111111111:1"
+    })).toMatchObject({
+      runtime: "research-agent",
+      live: true,
+      runtimeArn: expect.stringContaining("agent/11111111")
+    });
   });
 
   it("keeps spawn_cloud_agent simple for agents", () => {

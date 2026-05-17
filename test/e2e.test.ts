@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { afterEach, describe, expect, it } from "vitest";
 import { RuntimeService, type BackendAdapter, type DispatchRequest, type RuntimeEvent, type RuntimeRecord, type TaskStore } from "@agent-dispatch/core";
-import { createAgentDispatchMcpServer, createRuntimeServiceFromConfig } from "../src/index.js";
+import { createAgentDispatchMcpServer, createRuntimeServiceFromConfig, type AgentDispatchMcpServerOptions } from "../src/index.js";
 
 const tempDirs: string[] = [];
 
@@ -133,9 +133,9 @@ function createRuntime(adapter = mockAdapter([{ taskId: "ignored", type: "task.l
   });
 }
 
-async function createClient(runtime = createRuntime()) {
+async function createClient(runtime = createRuntime(), options?: AgentDispatchMcpServerOptions) {
   const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
-  const server = createAgentDispatchMcpServer(runtime);
+  const server = createAgentDispatchMcpServer(runtime, options);
   const client = new Client({ name: "agentdispatch-test", version: "0.1.0" });
   await server.connect(serverTransport);
   await client.connect(clientTransport);
@@ -229,6 +229,73 @@ describe("MCP tool invocation", () => {
           model: { provider: "bedrock", modelId: "anthropic.claude-3-5-sonnet" },
           runtime_tools: { enabled: ["web-search"] }
         }
+      });
+    } finally {
+      await client.close();
+      await server.close();
+    }
+  });
+
+  it("checks cloud runtime readiness through the agent-facing MCP tool", async () => {
+    const runtime = new RuntimeService({
+      config: {
+        accounts: { "dev-aws": { provider: "aws", region: "us-west-2", credentialSource: "aws-sdk-default" } },
+        backends: {
+          "aws-agentcore": {
+            provider: "aws",
+            capability: "agent-runtime",
+            adapter: "aws-agentcore",
+            account: "dev-aws"
+          }
+        },
+        runtimes: {
+          "research-agent": {
+            provider: "aws",
+            account: "dev-aws",
+            capability: "agent-runtime",
+            backend: "aws-agentcore",
+            protocol: "a2a",
+            target: {
+              mode: "session",
+              protocol: "a2a",
+              details: { runtimeArn: "arn:aws:bedrock-agentcore:us-west-2:123456789012:agent/11111111-1111-1111-1111-111111111111:1" }
+            }
+          }
+        },
+        defaults: { runtime: "research-agent" }
+      },
+      store: new MemoryStore(),
+      adapters: [mockAdapter([], "aws-agentcore")]
+    });
+    let liveInput: unknown;
+    const { client, server } = await createClient(runtime, {
+      awsAgentCoreLivePreflight: async (input) => {
+        liveInput = input;
+        return [{
+          name: `aws.${input.runtimeName}.runtime`,
+          status: "pass",
+          message: `runtime ${input.runtimeArn} reachable`
+        }];
+      }
+    });
+    try {
+      const response = await callJson(client, "check_cloud_agent_runtime", { runtime: "research-agent" });
+      expect(response).toMatchObject({
+        ok: true,
+        runtime: "research-agent",
+        provider: "aws",
+        account_profile: "dev-aws",
+        adapter: "aws-agentcore",
+        checks: expect.arrayContaining([
+          expect.objectContaining({ name: "runtime", status: "pass" }),
+          expect.objectContaining({ name: "aws.research-agent.runtime", status: "pass" })
+        ])
+      });
+      expect(liveInput).toMatchObject({
+        runtimeName: "research-agent",
+        region: "us-west-2",
+        mode: "session",
+        runtimeArn: "arn:aws:bedrock-agentcore:us-west-2:123456789012:agent/11111111-1111-1111-1111-111111111111:1"
       });
     } finally {
       await client.close();
