@@ -2,6 +2,16 @@
   "name": "@agent-dispatch/mcp-server",
   "version": "0.1.4",
   "description": "Provider-neutral MCP server for AgentDispatch.",
+  "keywords": [
+    "agentdispatch",
+    "mcp",
+    "model-context-protocol",
+    "cloud-agents",
+    "subagents",
+    "ai-agents",
+    "aws-agentcore",
+    "typescript"
+  ],
   "type": "module",
   "license": "Apache-2.0",
   "bin": {
