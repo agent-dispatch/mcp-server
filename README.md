@@ -314,6 +314,8 @@ npm test
 npm run build
 ```
 
+See the [release workflow](https://github.com/agent-dispatch/mcp-server/blob/main/docs/release.md) for npm Trusted Publisher setup, provenance publishing, and upstream package order.
+
 ## Contributing
 
 PRs, issues, and adapter contributions are welcome. See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the local workflow.
