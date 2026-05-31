@@ -185,7 +185,7 @@ Wire it into your MCP client:
   "mcpServers": {
     "agentdispatch": {
       "command": "npx",
-      "args": ["agentdispatch-mcp", "--config", "/abs/path/agentdispatch.config.json"]
+      "args": ["-y", "@agent-dispatch/mcp-server", "--config", "/abs/path/agentdispatch.config.json"]
     }
   }
 }
