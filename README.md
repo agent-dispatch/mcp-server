@@ -17,6 +17,7 @@
 
 <p align="center">
   <a href="https://www.npmjs.com/package/@agent-dispatch/mcp-server"><img alt="npm" src="https://img.shields.io/npm/v/@agent-dispatch/mcp-server?color=7C3AED&label=npm&style=flat-square"></a>
+  <a href="https://github.com/agent-dispatch/mcp-server/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/agent-dispatch/mcp-server/actions/workflows/ci.yml/badge.svg"></a>
   <img alt="MCP" src="https://img.shields.io/badge/MCP-1.x-06B6D4?style=flat-square">
   <img alt="AWS Bedrock AgentCore" src="https://img.shields.io/badge/AWS-Bedrock%20AgentCore-FF9900?style=flat-square">
   <img alt="License" src="https://img.shields.io/badge/license-Apache--2.0-0EA5E9?style=flat-square">
