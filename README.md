@@ -73,7 +73,7 @@ get_task_logs({ task_id: "task_...", cursor: 0, limit: 200 })
 get_task_result({ task_id: "task_..." })
 ```
 
-All tool inputs are validated with [Zod](https://zod.dev). See [`src/schemas.ts`](src/schemas.ts) for the exact shapes.
+All tool inputs are validated with [Zod](https://zod.dev). See [`src/schemas.ts`](https://github.com/agent-dispatch/mcp-server/blob/main/src/schemas.ts) for the exact shapes.
 
 ## Agent-facing contract
 
@@ -318,7 +318,7 @@ See the [release workflow](https://github.com/agent-dispatch/mcp-server/blob/mai
 
 ## Contributing
 
-PRs, issues, and adapter contributions are welcome. See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the local workflow.
+PRs, issues, and adapter contributions are welcome. See [`CONTRIBUTING.md`](https://github.com/agent-dispatch/mcp-server/blob/main/CONTRIBUTING.md) for the local workflow.
 
 If you ship a new framework worker or a new cloud adapter, open a discussion so it can be linked from the org README.
 
